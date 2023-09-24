@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,7 +50,7 @@ public class AuthorityController {
     @GetMapping("/ask-email-code")
     @Operation(summary = "请求邮箱验证码", description = "传入邮箱地址和验证码类型, 发送验证码到邮箱")
     public Result askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
-                               @RequestParam String type,
+                               @RequestParam @NotNull String type,
                                HttpServletRequest request) {
         long data = userService.registerEmailVerifyCode(type, email, request.getRemoteAddr());
         if (data == 0)

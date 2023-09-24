@@ -1,7 +1,6 @@
 package vip.xianlin.config;
 
 import jakarta.annotation.Resource;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import vip.xianlin.entity.Result;
 import vip.xianlin.filter.JwtAuthenticationFilter;
 
 @Configuration
@@ -50,7 +48,8 @@ public class SecurityConfiguration {
                         "/doc.html",
                         "/webjars/**",
                         // 开放静态资源的请求
-                        "/static/**"
+                        "/static/**",
+                        "/error/**"
                 );
     }
     
@@ -63,21 +62,6 @@ public class SecurityConfiguration {
                         .requestMatchers("/auth/**").permitAll()
                         // 其他请求都需要认证
                         .anyRequest().authenticated()
-                )
-                // 配置403响应
-                .exceptionHandling(exception -> exception
-                        .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.getWriter().write(Result.noAuth("用户访问被拒绝").asJsonString());
-                        })
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.setStatus(HttpServletResponse.SC_OK);
-                            response.getWriter().write(Result.loginExpire("用户访问被拒绝").asJsonString());
-                            // 记录日志, 记录访问的URL, 记录访问的IP
-                            log.info("用户访问被拒绝, 访问的URL: {}, 访问的IP: {}", request.getRequestURI(), request.getRemoteAddr());
-                        })
                 )
                 // 添加JWT认证过滤器
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

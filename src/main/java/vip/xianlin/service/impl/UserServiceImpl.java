@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     @Override
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
         // 从数据库中查询用户信息
-        UserEntity userEntity = lambdaQuery().eq(UserEntity::getUserId, userid).one();
+        UserEntity userEntity = this.lambdaQuery().eq(UserEntity::getUserId, userid).one();
         // 判空
         if (Objects.isNull(userEntity)) {
             throw new UsernameNotFoundException("用户不存在");

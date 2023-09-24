@@ -9,6 +9,13 @@ import vip.xianlin.entity.Result;
 @RestControllerAdvice
 @Slf4j
 public class ValidationController {
+    
+    /**
+     * 与SpringBoot保持一致，校验不通过打印警告信息，而不是直接抛出异常
+     *
+     * @param exception 验证异常
+     * @return 校验结果
+     */
     @ExceptionHandler(ValidationException.class)
     public Result validateError(ValidationException exception) {
         log.warn("Resolved [{}: {}]", exception.getClass().getName(), exception.getMessage());
