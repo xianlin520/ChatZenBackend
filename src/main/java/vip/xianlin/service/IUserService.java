@@ -13,6 +13,6 @@ import vip.xianlin.entity.UserEntity;
  */
 public interface IUserService extends IService<UserEntity> {
     
-    String registerEmailVerifyCode(String type, String email, String ip);
+    long registerEmailVerifyCode(String type, String email, String ip);
     
 }

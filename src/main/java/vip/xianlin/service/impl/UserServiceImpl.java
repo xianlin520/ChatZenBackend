@@ -5,6 +5,11 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import vip.xianlin.entity.UserEntity;
 import vip.xianlin.mapper.UserMapper;
@@ -12,8 +17,7 @@ import vip.xianlin.service.IUserService;
 import vip.xianlin.utils.Const;
 import vip.xianlin.utils.FlowUtils;
 
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -27,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 @Slf4j
-public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements IUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements IUserService, UserDetailsService {
     
     // 消息队列
     @Resource
@@ -49,13 +53,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
      * @return 验证码
      */
     @Override
-    public String registerEmailVerifyCode(String type, String email, String ip) {
+    public long registerEmailVerifyCode(String type, String email, String ip) {
         // 加锁, 防止并发
         synchronized (ip.intern()) {
             // 限流检查, 60秒内只能发送一次
             if (!flow.limitOnceCheck(ip, 60)) {
                 log.warn("用户IP: {} 在60秒内重复请求注册邮箱: {} 验证码", ip, email);
-                return "请勿频繁请求验证码, 剩余时间: " + flow.getExpireTime(ip);
+                return flow.getExpireTime(ip);
             }
             // 生成数字验证码, 不低于四位
             Random random = new Random();
@@ -65,9 +69,41 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
             rabbitTemplate.convertAndSend(Const.MQ_MAIL, map);
             // 将验证码存入Redis, 有效期5分钟
             stringRedisTemplate.opsForValue().set(Const.VERIFY_EMAIL_DATA + email, String.valueOf(code), 5, TimeUnit.MINUTES);
-            return null;
+            return 0;
         }
         
+    }
+    
+    
+    /**
+     * 通过重写 UserDetailsService 的 loadUserByUsername 方法实现用户认证和授权
+     */
+    @Override
+    public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
+        // 从数据库中查询用户信息
+        UserEntity userEntity = lambdaQuery().eq(UserEntity::getUserId, userid).one();
+        // 判空
+        if (Objects.isNull(userEntity)) {
+            throw new UsernameNotFoundException("用户不存在");
+        }
+        // 获取用户权限列表
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        // 封装进去
+        return new org.springframework.security.core.userdetails.User(
+                userEntity.getUserName(),
+                userEntity.getPassword(),
+                // 账号是否可用
+                true,
+                // 账号过期
+                true,
+                // 密码过期
+                true,
+                // 账号锁定
+                true,
+                // 用户的权限列表
+                authorities
+        );
     }
     
 }

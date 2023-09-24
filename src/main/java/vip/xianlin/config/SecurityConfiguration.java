@@ -74,9 +74,9 @@ public class SecurityConfiguration {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setContentType("application/json;charset=UTF-8");
                             response.setStatus(HttpServletResponse.SC_OK);
-                            response.getWriter().write(Result.loginExpire("用户未登录").asJsonString());
+                            response.getWriter().write(Result.loginExpire("用户访问被拒绝").asJsonString());
                             // 记录日志, 记录访问的URL, 记录访问的IP
-                            log.info("用户未登录, 访问的URL: {}, 访问的IP: {}", request.getRequestURI(), request.getRemoteAddr());
+                            log.info("用户访问被拒绝, 访问的URL: {}, 访问的IP: {}", request.getRequestURI(), request.getRemoteAddr());
                         })
                 )
                 // 添加JWT认证过滤器

@@ -57,11 +57,9 @@ public class MailQueueListener {
             MimeMessage message = mailSender.createMimeMessage();
             String sendName = MimeUtility.encodeText("千寻云");
             
-            //true表示需要创建一个multipart message
+            //设置邮件信息
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-//            helper.setFrom(fromAddress);
             helper.setFrom(new InternetAddress(sendName + " <" + username + ">"));
-            
             helper.setTo(email); // 设置收件人
             helper.setSubject("轻语阁-邮箱验证码"); // 设置邮件标题
             helper.setText(emailContent, true); // 设置邮件内容

@@ -8,6 +8,7 @@ import vip.xianlin.utils.Const;
 @Configuration
 public class RabbitConfiguration {
     
+    // 邮件队列, 消费者
     @Bean("mailQueue")
     public Queue mailQueue() {
         return new Queue(Const.MQ_MAIL);

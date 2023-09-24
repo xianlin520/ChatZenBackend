@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Email;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vip.xianlin.entity.Result;
 import vip.xianlin.entity.UserEntity;
@@ -25,6 +27,7 @@ import java.util.Collection;
 @RestController
 @RequestMapping("auth")
 @Slf4j
+@Validated
 @Tag(name = "用户认证", description = "用户登录、注册等操作")
 public class AuthorityController {
     
@@ -45,12 +48,14 @@ public class AuthorityController {
     
     @GetMapping("/ask-email-code")
     @Operation(summary = "请求邮箱验证码", description = "传入邮箱地址和验证码类型, 发送验证码到邮箱")
-    public Result askEmailCode(@RequestParam String email, @RequestParam String type, HttpServletRequest request) {
-        String msg = userService.registerEmailVerifyCode(type, email, request.getRemoteAddr());
-        if (msg == null)
+    public Result askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
+                               @RequestParam String type,
+                               HttpServletRequest request) {
+        long data = userService.registerEmailVerifyCode(type, email, request.getRemoteAddr());
+        if (data == 0)
             return Result.succ("验证码发送成功");
         else
-            return Result.fail(msg);
+            return Result.fail(400, "请勿频繁请求验证码", data);
     }
     
     
