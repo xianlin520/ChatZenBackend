@@ -42,7 +42,7 @@ public class GeneratorMySQL {
     /**
      * 要生成的表
      */
-    public static final String[] TABLES = {"user"};
+    public static final String[] TABLES = {"user_info", "friend_record", "friend_group", "friend_requests", "private_chat_record", "group_chat_record"};
     
     
     /**
@@ -57,7 +57,7 @@ public class GeneratorMySQL {
                             .dateType(DateType.ONLY_DATE) // 时间策略
                             .commentDate("yyyy-MM-dd") // 注释日期
                             .outputDir(SAVE_PATH) // 输出目录
-                            // .disableOpenDir()// 生成后禁止打开所生成的系统目录
+                            .disableOpenDir()// 生成后禁止打开所生成的系统目录
                             .fileOverride(); // 覆盖已生成文件
                     
                 }).packageConfig(builder -> {
