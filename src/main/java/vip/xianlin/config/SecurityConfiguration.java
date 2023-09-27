@@ -41,15 +41,17 @@ public class SecurityConfiguration {
         return webSecurity -> webSecurity
                 // 忽略静态资源的拦截
                 .ignoring()
-                // 开放swagger-ui的请求
                 .requestMatchers(
+                        // 开放swagger-ui的请求
                         "/swagger-ui/**",
                         "/v3/api-docs/**",
                         "/doc.html",
                         "/webjars/**",
                         // 开放静态资源的请求
                         "/static/**",
-                        "/error/**"
+                        "/error/**",
+                        // 开放websocket的请求
+                        "/websocket/**"
                 );
     }
     

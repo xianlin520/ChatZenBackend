@@ -46,6 +46,19 @@ public class AuthorityController {
     @Resource
     private JwtUtils jwtUtils;
     
+    // TODO 用户注册接口及业务代码实现
+    @PostMapping("/register")
+    @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
+    public Result register() {
+        return Result.succ("注册成功");
+    }
+    
+    // TODO 用户删除账号接口及业务代码实现
+    @DeleteMapping("/delete")
+    @Operation(summary = "用户删除", description = "用户删除账号, 传入用户信息")
+    public Result delete() {
+        return Result.succ("删除成功");
+    }
     
     @GetMapping("/ask-email-code")
     @Operation(summary = "请求邮箱验证码", description = "传入邮箱地址和验证码类型, 发送验证码到邮箱")
@@ -60,9 +73,19 @@ public class AuthorityController {
     }
     
     
+    // TODO 发送手机验证码接口及业务代码实现
+    @GetMapping("/ask-phone-code")
+    @Operation(summary = "请求手机验证码", description = "传入手机号和验证码类型, 发送验证码到手机")
+    public Result askPhoneCode(@RequestParam @NotNull String phone, // 手机号, 必须符合手机号格式
+                               @RequestParam @NotNull String type,
+                               HttpServletRequest request) {
+        return Result.succ("验证码发送成功");
+    }
+    
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录认证")
     public Result login(@RequestBody UserAuthVo user) {
+        // TODO 实现用户密码登录, 邮箱验证码登录, 手机验证码登录业务代码
         // 创建用户名密码验证令牌
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
         try {
