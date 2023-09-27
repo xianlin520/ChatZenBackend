@@ -102,6 +102,17 @@ public class JwtUtils {
     }
     
     /**
+     * 传入Token字符串, 解析出其中的用户ID
+     *
+     * @param token 标准Token字符串
+     * @return 用户ID
+     */
+    public Integer tokenToUserId(String token) {
+        DecodedJWT jwt = this.resolveJwt(token);
+        return jwt == null ? null : this.toId(jwt);
+    }
+    
+    /**
      * 将jwt对象中的用户ID提取出来
      *
      * @param jwt 已解析的Jwt对象
