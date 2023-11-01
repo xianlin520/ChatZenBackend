@@ -1,20 +1,34 @@
 package vip.xianlin.config;
 
 
+import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.server.standard.ServerEndpointExporter;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import vip.xianlin.handler.WebSocketHandler;
+import vip.xianlin.interceptor.WebSocketHandshake;
 
 @Configuration
-public class WebSocketConfig {
+@EnableWebSocket  // 开启websocket
+public class WebSocketConfig implements WebSocketConfigurer {
     
-    /**
-     * 注入一个ServerEndpointExporter,该Bean会自动注册使用@ServerEndpoint注解申明的websocket endpoint
-     */
+    
+    // 注入拦截器
+    @Resource
+    private WebSocketHandshake myWebSocketHandshake;
+    
     @Bean
-    public ServerEndpointExporter serverEndpointExporter() {
-        return new ServerEndpointExporter();
+    public WebSocketHandler myHandler() {
+        return new WebSocketHandler();
     }
     
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        // 注册拦截器
+        registry.addHandler(myHandler(), "/websocket")
+                .addInterceptors(myWebSocketHandshake);
+    }
 }
 

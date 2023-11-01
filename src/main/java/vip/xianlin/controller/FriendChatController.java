@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import vip.xianlin.entity.Result;
 import vip.xianlin.entity.vo.request.MessageVo;
+import vip.xianlin.handler.WebSocketHandler;
 import vip.xianlin.utils.JwtUtils;
 
 @RestController
@@ -20,8 +22,11 @@ public class FriendChatController {
     
     @PostMapping("/send-message")
     public void sendChat(@RequestBody MessageVo vo, HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
-        Integer userId = utils.tokenToUserId(authorization);
+        // 获取Attribute中的用户ID
+        Integer userId = (Integer) request.getAttribute("userId");
+        // 将消息发送给好友
+        WebSocketHandler.sendMsgToUserId(vo.getFriendId(), Result.succ(vo.getMessage()));
+        
         
     }
 }

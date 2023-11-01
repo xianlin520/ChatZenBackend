@@ -65,7 +65,7 @@ public class AuthorityController {
     public Result askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
                                @RequestParam @NotNull String type,
                                HttpServletRequest request) {
-        long data = userService.registerEmailVerifyCode(type, email, request.getRemoteAddr());
+        long data = userService.askEmailVerifyCode(type, email, request.getRemoteAddr());
         if (data == 0)
             return Result.succ("验证码发送成功");
         else

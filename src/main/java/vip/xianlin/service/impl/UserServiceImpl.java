@@ -43,17 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
     @Resource
     FlowUtils flow;
     
-    /**
-     * 注册邮箱验证码, 有效期5分钟
-     * 60S内只能发送一次
-     *
-     * @param type  验证码类型
-     * @param email 邮箱地址
-     * @param ip    IP地址
-     * @return 验证码
-     */
+    
     @Override
-    public long registerEmailVerifyCode(String type, String email, String ip) {
+    public long askEmailVerifyCode(String type, String email, String ip) {
         // 加锁, 防止并发
         synchronized (ip.intern()) {
             // 限流检查, 60秒内只能发送一次
