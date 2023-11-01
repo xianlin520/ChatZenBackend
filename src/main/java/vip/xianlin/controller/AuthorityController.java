@@ -20,7 +20,8 @@ import vip.xianlin.entity.Result;
 import vip.xianlin.entity.UserEntity;
 import vip.xianlin.entity.vo.request.UserAuthVo;
 import vip.xianlin.entity.vo.response.UserAuthTokenVo;
-import vip.xianlin.service.impl.UserServiceImpl;
+import vip.xianlin.service.IAuthorityService;
+import vip.xianlin.service.IUserService;
 import vip.xianlin.utils.JwtUtils;
 
 import java.util.Collection;
@@ -36,7 +37,12 @@ public class AuthorityController {
      * 用户表操作
      */
     @Resource
-    private UserServiceImpl userService;
+    private IUserService userService;
+    /**
+     * 鉴权服务
+     */
+    @Resource
+    private IAuthorityService authorityService;
     /**
      * 登录认证操作
      */
@@ -65,7 +71,7 @@ public class AuthorityController {
     public Result askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
                                @RequestParam @NotNull String type,
                                HttpServletRequest request) {
-        long data = userService.askEmailVerifyCode(type, email, request.getRemoteAddr());
+        long data = authorityService.askEmailVerifyCode(type, email, request.getRemoteAddr());
         if (data == 0)
             return Result.succ("验证码发送成功");
         else
