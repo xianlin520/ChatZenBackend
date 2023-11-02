@@ -1,5 +1,6 @@
 package vip.xianlin.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -36,6 +37,30 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
     UserServiceImpl userService;
     
     @Override
+    public UserEntity getUserByPrincipal(String principal) {
+        QueryWrapper<UserEntity> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(UserEntity::getEmail, principal).or().eq(UserEntity::getPhone, principal);
+        return userService.getOne(wrapper);
+        
+    }
+    
+    @Override
+    public boolean verifyCode(String principal, String verifyCode) {
+        // 从Redis中获取邮箱验证码
+        String emailCode = stringRedisTemplate.opsForValue().get(Const.VERIFY_EMAIL_DATA + principal);
+        // 从Redis中获取手机验证码
+        String phoneCode = stringRedisTemplate.opsForValue().get(Const.VERIFY_PHONE_DATA + principal);
+        // 判断验证码是否正确
+        if (Objects.equals(verifyCode, emailCode) || Objects.equals(verifyCode, phoneCode)) {
+            // 验证码正确, 删除Redis中的验证码
+            stringRedisTemplate.delete(Const.VERIFY_EMAIL_DATA + principal);
+            stringRedisTemplate.delete(Const.VERIFY_PHONE_DATA + principal);
+            return true;
+        }
+        return false;
+    }
+    
+    @Override
     public long askEmailVerifyCode(String type, String email, String ip) {
         // 加锁, 防止并发
         synchronized (ip.intern()) {
@@ -54,32 +79,45 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
             stringRedisTemplate.opsForValue().set(Const.VERIFY_EMAIL_DATA + email, String.valueOf(code), 5, TimeUnit.MINUTES);
             return 0;
         }
-        
     }
     
     @Override
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
-        // 从数据库中查询用户信息
-        UserEntity userEntity = userService.lambdaQuery().eq(UserEntity::getUserId, userid).one();
+        // 从数据库中查询用户信息, 最多一条
+        UserEntity userEntity = userService.getById(userid);
+        
+        // 账号是否可用
+        boolean enabled = true;
+        // 账号是否锁定
+        boolean noLocked = true;
         // 判空
-        if (Objects.isNull(userEntity)) {
-            throw new UsernameNotFoundException("用户不存在");
-        }
+        if (Objects.isNull(userEntity))
+            enabled = false;
+        
         // 获取用户权限列表
         List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        String[] roles = userEntity.getRole();
+        // 遍历, 将每个角色添加到权限列表中
+        for (String r : roles) {
+            if (r.equals(Const.Role.BAN.name())) {
+                noLocked = false;
+                break;
+            }
+            authorities.add(new SimpleGrantedAuthority(r));
+        }
+        
         // 封装进去
         return new org.springframework.security.core.userdetails.User(
                 userEntity.getUserName(),
                 userEntity.getPassword(),
                 // 账号是否可用
-                true,
+                enabled,
                 // 账号过期
                 true,
                 // 密码过期
                 true,
                 // 账号锁定
-                true,
+                noLocked,
                 // 用户的权限列表
                 authorities
         );

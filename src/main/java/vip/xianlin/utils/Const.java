@@ -1,6 +1,11 @@
 package vip.xianlin.utils;
 
 public class Const {
+    // 创建角色枚举
+    public enum Role {
+        USER, ADMIN, TEST, BAN, GUEST
+    }
+    
     //JWT令牌
     public final static String JWT_BLACK_LIST = "jwt:blacklist:"; // Redis 数据前缀
     public final static String JWT_FREQUENCY = "jwt:frequency:";
@@ -21,6 +26,4 @@ public class Const {
     //消息队列
     public final static String MQ_MAIL = "mail";
     public final static String MQ_WS_SEND = "ws:send";
-    //用户角色
-    public final static String ROLE_DEFAULT = "user";
 }

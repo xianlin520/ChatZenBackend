@@ -12,5 +12,6 @@ import vip.xianlin.entity.UserEntity;
  * @since 2023-09-18
  */
 public interface IUserService extends IService<UserEntity> {
+
     
 }

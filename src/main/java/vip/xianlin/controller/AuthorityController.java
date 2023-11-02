@@ -13,18 +13,23 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vip.xianlin.entity.Result;
 import vip.xianlin.entity.UserEntity;
 import vip.xianlin.entity.vo.request.UserAuthVo;
+import vip.xianlin.entity.vo.request.UserCodeAuthVo;
 import vip.xianlin.entity.vo.response.UserAuthTokenVo;
 import vip.xianlin.service.IAuthorityService;
 import vip.xianlin.service.IUserService;
+import vip.xianlin.utils.Const;
 import vip.xianlin.utils.JwtUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("auth")
@@ -56,14 +61,14 @@ public class AuthorityController {
     @PostMapping("/register")
     @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
     public Result register() {
-        return Result.succ("注册成功");
+        return Result.succ("注册接口-开发中");
     }
     
     // TODO 用户删除账号接口及业务代码实现
     @DeleteMapping("/delete")
     @Operation(summary = "用户删除", description = "用户删除账号, 传入用户信息")
     public Result delete() {
-        return Result.succ("删除成功");
+        return Result.succ("删除接口-开发中");
     }
     
     @GetMapping("/ask-email-code")
@@ -85,24 +90,67 @@ public class AuthorityController {
     public Result askPhoneCode(@RequestParam @NotNull String phone, // 手机号, 必须符合手机号格式
                                @RequestParam @NotNull String type,
                                HttpServletRequest request) {
-        return Result.succ("验证码发送成功");
+        return Result.succ("手机验证码-开发中");
+    }
+    
+    @PostMapping("/login-by-code")
+    @Operation(summary = "验证码登录", description = "传入验证码和验证码类型, 进行登录认证")
+    public Result loginByCode(@RequestBody UserCodeAuthVo userCodeAuthVo,
+                              HttpServletRequest request) {
+        String principal = null;
+        // 判断邮箱是否为空
+        if (Objects.nonNull(userCodeAuthVo.getEmail())) {
+            // 邮箱不为空, 则获取邮箱地址
+            principal = userCodeAuthVo.getEmail();
+        } else if (Objects.nonNull(userCodeAuthVo.getPhone())) {
+            // 手机号不为空, 则获取手机号
+            principal = userCodeAuthVo.getPhone();
+        } else {
+            // 邮箱和手机号都为空, 则返回错误信息
+            return Result.fail("邮箱和手机号不能同时为空");
+        }
+        // 验证验证码是否正确
+        if (!authorityService.verifyCode(principal, userCodeAuthVo.getAuthCode())) {
+            return Result.fail("验证码错误");
+        }
+        
+        // 获取用户信息
+        UserEntity user = authorityService.getUserByPrincipal(principal);
+        // 获取用户权限列表
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        String[] roles = user.getRole();
+        // 遍历, 将每个角色添加到权限列表中
+        for (String r : roles) {
+            if (r.equals(Const.Role.BAN.name())) {
+                // 如果用户被封禁, 则返回错误信息
+                return Result.fail("用户被封禁");
+            }
+            authorities.add(new SimpleGrantedAuthority(r));
+        }
+        
+        // 创建用户令牌对象
+        UserAuthTokenVo userAuthTokenVo = new UserAuthTokenVo();
+        // 把两个对象进行拷贝
+        BeanUtils.copyProperties(user, userAuthTokenVo);
+        // 设置用户令牌
+        userAuthTokenVo.setToken(jwtUtils.createJwt(authorities, user.getUserId()));
+        // 认证成功响应
+        return Result.succ(userAuthTokenVo);
     }
     
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录认证")
     public Result login(@RequestBody UserAuthVo user) {
-        // TODO 实现用户密码登录, 邮箱验证码登录, 手机验证码登录业务代码
-        // 创建用户名密码验证令牌
+        // TODO 实现用户密码登录, 邮箱密码, 手机密码登录
+        // 创建用户名密码验证令牌UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
         try {
             // 进行认证
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             // 获取用户角色对象
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            // 将认证信息保存在会话中
-            SecurityContextHolder.getContext().setAuthentication(authentication);
             // 获取用户数据
-            UserEntity one = userService.lambdaQuery().eq(UserEntity::getUserId, user.getUserId()).one();
+            UserEntity one = userService.getById(user.getUserId());
             // 创建用户令牌对象
             UserAuthTokenVo userAuthTokenVo = new UserAuthTokenVo();
             // 把两个对象进行拷贝
