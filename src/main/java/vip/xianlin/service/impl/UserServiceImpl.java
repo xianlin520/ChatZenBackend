@@ -19,6 +19,5 @@ import vip.xianlin.service.IUserService;
 @Service
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> implements IUserService {
-    
 
 }

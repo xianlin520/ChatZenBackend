@@ -14,13 +14,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import vip.xianlin.entity.Result;
 import vip.xianlin.entity.UserEntity;
 import vip.xianlin.entity.vo.request.UserAuthVo;
 import vip.xianlin.entity.vo.request.UserCodeAuthVo;
+import vip.xianlin.entity.vo.request.UserRegisterVo;
 import vip.xianlin.entity.vo.response.UserAuthTokenVo;
+import vip.xianlin.entity.vo.response.UserBasicInfoVo;
 import vip.xianlin.service.IAuthorityService;
 import vip.xianlin.service.IUserService;
 import vip.xianlin.utils.Const;
@@ -54,14 +57,42 @@ public class AuthorityController {
     @Resource
     private AuthenticationManager authenticationManager;
     
+    // 密码加密器
+    @Resource
+    private PasswordEncoder passwordEncoder;
+    
     @Resource
     private JwtUtils jwtUtils;
+    
     
     // TODO 用户注册接口及业务代码实现
     @PostMapping("/register")
     @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
-    public Result register() {
-        return Result.succ("注册接口-开发中");
+    public Result register(@RequestBody UserRegisterVo userRegisterVo,
+                           HttpServletRequest request) {
+        // 判断用户是否已经注册
+        if (authorityService.getUserByPrincipal(userRegisterVo.getEmail()) != null) {
+            return Result.fail("用户已经注册");
+        }
+        // 判断邮箱与验证码是否正确
+        if (!authorityService.verifyCode(userRegisterVo.getEmail(), userRegisterVo.getEmailCode())) {
+            return Result.fail("验证码错误");
+        }
+        // 创建用户对象
+        UserEntity user = new UserEntity();
+        // 把用户信息设置到用户对象中
+        user.setEmail(userRegisterVo.getEmail());
+        user.setUserName(userRegisterVo.getNickname());
+        user.setPassword(passwordEncoder.encode(userRegisterVo.getPassword()));
+        user.setHeadThumb("url");
+        // 保存用户信息
+        userService.save(user);
+        UserEntity userByPrincipal = authorityService.getUserByPrincipal(userRegisterVo.getEmail());
+        // 拷贝用户信息到基本信息对象中
+        UserBasicInfoVo userBasicInfoVo = new UserBasicInfoVo();
+        BeanUtils.copyProperties(userByPrincipal, userBasicInfoVo);
+        // 返回用户基本信息
+        return Result.succ(userBasicInfoVo);
     }
     
     // TODO 用户删除账号接口及业务代码实现
@@ -138,7 +169,6 @@ public class AuthorityController {
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录认证")
     public Result login(@RequestBody UserAuthVo user) {
-        // TODO 实现用户密码登录, 邮箱密码, 手机密码登录
         // 创建用户名密码验证令牌UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getPrincipal(), user.getPassword());
         try {
