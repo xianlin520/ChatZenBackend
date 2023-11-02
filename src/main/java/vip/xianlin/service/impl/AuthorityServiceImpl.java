@@ -39,7 +39,7 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
     @Override
     public UserEntity getUserByPrincipal(String principal) {
         QueryWrapper<UserEntity> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(UserEntity::getEmail, principal).or().eq(UserEntity::getPhone, principal);
+        wrapper.lambda().eq(UserEntity::getEmail, principal).or().eq(UserEntity::getPhone, principal).or().eq(UserEntity::getUserId, principal);
         return userService.getOne(wrapper);
         
     }
@@ -82,9 +82,9 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
     }
     
     @Override
-    public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String principal) throws UsernameNotFoundException {
         // 从数据库中查询用户信息, 最多一条
-        UserEntity userEntity = userService.getById(userid);
+        UserEntity userEntity = getUserByPrincipal(principal);
         
         // 账号是否可用
         boolean enabled = true;

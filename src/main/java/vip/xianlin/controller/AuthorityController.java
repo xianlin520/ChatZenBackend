@@ -143,14 +143,14 @@ public class AuthorityController {
     public Result login(@RequestBody UserAuthVo user) {
         // TODO 实现用户密码登录, 邮箱密码, 手机密码登录
         // 创建用户名密码验证令牌UsernamePasswordAuthenticationToken
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getPrincipal(), user.getPassword());
         try {
             // 进行认证
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             // 获取用户角色对象
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             // 获取用户数据
-            UserEntity one = userService.getById(user.getUserId());
+            UserEntity one = authorityService.getUserByPrincipal(user.getPrincipal());
             // 创建用户令牌对象
             UserAuthTokenVo userAuthTokenVo = new UserAuthTokenVo();
             // 把两个对象进行拷贝
