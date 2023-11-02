@@ -64,11 +64,10 @@ public class UserEntity extends Model<UserEntity> {
     @TableField("last_login_time")
     private Date lastLoginTime;
     
-    public String[] getRole() {
+    public String[] getRoles() {
         // 读取字符串, 以逗号分隔, 转换为数组
         return role.split(",");
     }
-    
     
     @Override
     public Serializable pkVal() {

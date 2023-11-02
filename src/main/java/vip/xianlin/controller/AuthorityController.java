@@ -118,7 +118,7 @@ public class AuthorityController {
         UserEntity user = authorityService.getUserByPrincipal(principal);
         // 获取用户权限列表
         List<GrantedAuthority> authorities = new ArrayList<>();
-        String[] roles = user.getRole();
+        String[] roles = user.getRoles();
         // 遍历, 将每个角色添加到权限列表中
         for (String r : roles) {
             if (r.equals(Const.Role.BAN.name())) {
