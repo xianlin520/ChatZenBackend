@@ -99,12 +99,9 @@ public class AuthorityController {
                               HttpServletRequest request) {
         String principal = null;
         // 判断邮箱是否为空
-        if (Objects.nonNull(userCodeAuthVo.getEmail())) {
+        if (Objects.nonNull(userCodeAuthVo.getPrincipal())) {
             // 邮箱不为空, 则获取邮箱地址
-            principal = userCodeAuthVo.getEmail();
-        } else if (Objects.nonNull(userCodeAuthVo.getPhone())) {
-            // 手机号不为空, 则获取手机号
-            principal = userCodeAuthVo.getPhone();
+            principal = userCodeAuthVo.getPrincipal();
         } else {
             // 邮箱和手机号都为空, 则返回错误信息
             return Result.fail("邮箱和手机号不能同时为空");
