@@ -38,6 +38,8 @@ public class MailQueueListener {
     
     @RabbitHandler
     public void sendMailMessage(Map<String, Object> map) {
+        // 打印日志
+        log.info("消息队列开始处理消息, 收件人:" + map.get("email"));
         // 获取邮件信息
         String email = (String) map.get("email");
         Integer code = (Integer) map.get("code");

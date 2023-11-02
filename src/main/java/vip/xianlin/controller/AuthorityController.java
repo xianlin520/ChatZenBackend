@@ -65,7 +65,6 @@ public class AuthorityController {
     private JwtUtils jwtUtils;
     
     
-    // TODO 用户注册接口及业务代码实现
     @PostMapping("/register")
     @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
     public Result register(@RequestBody UserRegisterVo userRegisterVo,

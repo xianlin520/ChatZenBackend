@@ -7,6 +7,7 @@ chat-zen:
     expire: 2
 spring:
   profiles:
+    #    active: prod
     active: '@environment@'
   devtools:
     restart:

@@ -5,8 +5,21 @@ spring:
     username: 15653674386@163.com
     password: PITHQADAOMQATXRD
     protocol: smtp
+    port: 465
+    default-encoding: UTF-8
+    properties:
+      mail.smtp.auth: true
+      mail:
+        smtp:
+          ssl:
+            enable: true
+            trust: '*'
+      mail.smtp.socketFactory.port: 465
+      mail.smtp.socketFactory.class: javax.net.ssl.SSLSocketFactory
+      mail.smtp.socketFactory.fallback: false
+  
   rabbitmq:
-    addresses: localhost
+    addresses: 121.41.122.33
     port: 5672
     username: guest
     password: guest
@@ -14,13 +27,13 @@ spring:
   # 配置MySql数据源
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # 设置驱动程序
-    url: jdbc:mysql://localhost:3306/chat_zen?useSSL=false # 设置数据库
+    url: jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false # 设置数据库
     username: root  # 数据库用户名
-    password: root  # 数据库密码
+    password: QianXun  # 数据库密码
   # 配置Redis数据源
   data:
     redis:
-      host: 127.0.0.1 # 连接地址
+      host: 121.41.122.33 # 连接地址
       port: 6379 # 连接端口
       jedis:
         pool:
@@ -51,4 +64,4 @@ spring:
       methods: '*'
 
 logging:
-  config: classpath:logback/dev-logback.xml # 配置LogBack日志框架配文件路径
+  config: classpath:logback/prod-logback.xml # 配置LogBack日志框架配文件路径
