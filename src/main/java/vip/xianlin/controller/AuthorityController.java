@@ -69,6 +69,8 @@ public class AuthorityController {
     @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
     public Result register(@RequestBody UserRegisterVo userRegisterVo,
                            HttpServletRequest request) {
+        // 打印用户注册信息
+        log.info("用户注册邮箱: {}", userRegisterVo.getEmail());
         // 判断用户是否已经注册
         if (authorityService.getUserByPrincipal(userRegisterVo.getEmail()) != null) {
             return Result.fail("用户已经注册");
