@@ -15,4 +15,7 @@ public class UserAuthVo {
     @Schema(description = "用户密码, 加密储存")
     @NotNull
     String password;
+    
+    @Schema(description = "是否记住登录状态")
+    boolean rememberMe;
 }

@@ -16,4 +16,7 @@ public class UserCodeAuthVo {
     @NotNull // 验证码不能为空
     String authCode;
     
+    @Schema(description = "是否记住登录状态")
+    boolean rememberMe;
+    
 }

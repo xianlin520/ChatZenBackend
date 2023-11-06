@@ -162,7 +162,7 @@ public class AuthorityController {
         // 把两个对象进行拷贝
         BeanUtils.copyProperties(user, userAuthTokenVo);
         // 设置用户令牌
-        userAuthTokenVo.setToken(jwtUtils.createJwt(authorities, user.getUserId()));
+        userAuthTokenVo.setToken(jwtUtils.createJwt(authorities, user.getUserId(), userCodeAuthVo.isRememberMe()));
         // 认证成功响应
         return Result.succ(userAuthTokenVo);
     }
@@ -184,7 +184,7 @@ public class AuthorityController {
             // 把两个对象进行拷贝
             BeanUtils.copyProperties(one, userAuthTokenVo);
             // 设置用户令牌
-            userAuthTokenVo.setToken(jwtUtils.createJwt(authorities, one.getUserId()));
+            userAuthTokenVo.setToken(jwtUtils.createJwt(authorities, one.getUserId(), user.isRememberMe()));
             // 认证成功响应
             return Result.succ(userAuthTokenVo);
         } catch (AuthenticationException e) {

@@ -23,7 +23,7 @@ public class JwtUtils {
     @Value("${chat-zen.jwt.key}")
     private String key;
     //令牌的过期时间，以小时为单位
-    @Value("${chat-zen.jwt.expire}")
+    @Value("${chat-zen.jwt.expire}4")
     private int expire;
     
     
@@ -55,9 +55,14 @@ public class JwtUtils {
      * @param userId      用户ID
      * @return 令牌
      */
-    public String createJwt(Collection<? extends GrantedAuthority> authorities, int userId) {
+    public String createJwt(Collection<? extends GrantedAuthority> authorities, int userId, boolean rememberMe) {
         Algorithm algorithm = Algorithm.HMAC256(key);
-        Date expire = this.expireTime();
+        Date expire;
+        if (rememberMe) {
+            expire = this.expireTime15Day();
+        } else {
+            expire = this.expireTime();
+        }
         return JWT.create()
                 .withJWTId(UUID.randomUUID().toString())
                 .withClaim("id", userId)
@@ -79,6 +84,19 @@ public class JwtUtils {
         calendar.add(Calendar.HOUR, expire);
         return calendar.getTime();
     }
+    
+    /**
+     * 根据配置快速计算过期时间
+     * 15天
+     *
+     * @return 过期时间
+     */
+    public Date expireTime15Day() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 360);
+        return calendar.getTime();
+    }
+    
     
     /**
      * 解析Jwt令牌
