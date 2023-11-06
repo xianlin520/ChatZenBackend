@@ -8,7 +8,6 @@ chat-zen:
 spring:
   profiles:
     active: prod
-  #    active: '@environment@'
   devtools:
     restart:
       enabled: true

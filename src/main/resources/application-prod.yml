@@ -27,7 +27,7 @@ spring:
   # 配置MySql数据源
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver # 设置驱动程序
-    url: jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false # 设置数据库
+    url: jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false&allowPublicKeyRetrieval=true # 设置数据库
     username: root  # 数据库用户名
     password: QianXun  # 数据库密码
   # 配置Redis数据源
