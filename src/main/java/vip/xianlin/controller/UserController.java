@@ -29,7 +29,7 @@ public class UserController {
     
     @Operation(summary = "用户注销", description = "用户注销登录, Token失效", security = {@SecurityRequirement(name = "Authorization")})
     @PostMapping("/logout")
-    public Result logout(HttpServletRequest request) {
+    public Result<String> logout(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         if (utils.invalidateJwt(authorization)) {
             return Result.succ("退出登录成功");

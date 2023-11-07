@@ -105,12 +105,12 @@ public class AuthorityController {
     
     @GetMapping("/ask-email-code")
     @Operation(summary = "请求邮箱验证码", description = "传入邮箱地址和验证码类型, 发送验证码到邮箱")
-    public Result askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
-                               @RequestParam @NotNull String type,
-                               HttpServletRequest request) {
+    public Result<Long> askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
+                                     @RequestParam @NotNull String type,
+                                     HttpServletRequest request) {
         long data = authorityService.askEmailVerifyCode(type, email, request.getRemoteAddr());
         if (data == 0)
-            return Result.succ("验证码发送成功");
+            return Result.succ(200, "验证码发送成功", 0L);
         else
             return Result.fail(400, "请勿频繁请求验证码", data);
     }
