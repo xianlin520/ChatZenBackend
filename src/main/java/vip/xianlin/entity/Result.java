@@ -8,12 +8,12 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class Result implements Serializable {
+public class Result<T> implements Serializable {
     
     @Schema(description = "状态码")
     private Integer code;
     @Schema(description = "返回数据")
-    private Object data;
+    private T data;
     @Schema(description = "返回信息")
     private String msg;
     
@@ -23,7 +23,7 @@ public class Result implements Serializable {
      * @param data 返回数据
      * @return Result
      */
-    public static Result succ(Object data) {
+    public static <T> Result<T> succ(T data) {
         return succ(200, "操作成功", data);
     }
     
@@ -33,7 +33,7 @@ public class Result implements Serializable {
      * @param msg 返回信息
      * @return Result
      */
-    public static Result fail(String msg) {
+    public static <T> Result<T> fail(String msg) {
         return fail(400, msg, null);
     }
     
@@ -43,7 +43,7 @@ public class Result implements Serializable {
      * @param msg 返回信息
      * @return Result
      */
-    public static Result noAuth(String msg) {
+    public static <T> Result<T> noAuth(String msg) {
         return fail(403, msg, null);
     }
     
@@ -53,7 +53,7 @@ public class Result implements Serializable {
      * @param msg 返回信息
      * @return Result
      */
-    public static Result loginExpire(String msg) {
+    public static <T> Result<T> loginExpire(String msg) {
         return fail(401, msg, null);
     }
     
@@ -63,20 +63,20 @@ public class Result implements Serializable {
      * @param msg 返回信息
      * @return Result
      */
-    public static Result noResource(String msg) {
+    public static <T> Result<T> noResource(String msg) {
         return fail(404, msg, null);
     }
     
-    public static Result succ(int code, String msg, Object data) {
-        Result result = new Result();
+    public static <T> Result<T> succ(int code, String msg, T data) {
+        Result<T> result = new Result<>();
         result.setCode(code);
         result.setMsg(msg);
         result.setData(data);
         return result;
     }
     
-    public static Result fail(int code, String msg, Object data) {
-        Result result = new Result();
+    public static <T> Result<T> fail(int code, String msg, T data) {
+        Result<T> result = new Result<>();
         result.setCode(code);
         result.setMsg(msg);
         result.setData(data);

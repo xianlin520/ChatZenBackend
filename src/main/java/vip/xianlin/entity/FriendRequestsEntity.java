@@ -19,7 +19,7 @@ import java.util.Date;
  * </p>
  *
  * @author 羡林i
- * @since 2023-09-27
+ * @since 2023-11-07
  */
 @Getter
 @Setter
@@ -37,20 +37,24 @@ public class FriendRequestsEntity extends Model<FriendRequestsEntity> {
     private String requesterMsg;
     
     @Schema(description = "请求人id, 关联userid")
-    @TableField("requester_id")
-    private Integer requesterId;
+    @TableField("sender_id")
+    private Integer senderId;
     
     @Schema(description = "接收人id, 关联userid")
     @TableField("receiver_id")
     private Integer receiverId;
     
-    @Schema(description = "请求状态, 默认为2")
+    @Schema(description = "请求状态, 为枚举类型")
     @TableField("status")
-    private Integer status;
+    private String status;
     
     @Schema(description = "请求时间, 默认为当前时间")
     @TableField("send_time")
     private Date sendTime;
+    
+    @Schema(description = "响应时间, 处理时间")
+    @TableField("response_time")
+    private Date responseTime;
     
     @Override
     public Serializable pkVal() {

@@ -19,7 +19,7 @@ import java.util.Date;
  * </p>
  *
  * @author 羡林i
- * @since 2023-09-27
+ * @since 2023-11-07
  */
 @Getter
 @Setter
@@ -52,9 +52,9 @@ public class FriendRecordEntity extends Model<FriendRecordEntity> {
     @TableField("added_time")
     private Date addedTime;
     
-    @Schema(description = "消息通知等级, 默认为2")
+    @Schema(description = "消息通知等级")
     @TableField("notice_level")
-    private Integer noticeLevel;
+    private String noticeLevel;
     
     @Override
     public Serializable pkVal() {

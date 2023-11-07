@@ -11,9 +11,9 @@ import java.util.Collections;
 
 public class GeneratorMySQL {
     /**
-     * 数据库连接url
+     * 数据库连接url, 读取配置
      */
-    public static final String URL = "jdbc:mysql://localhost:3306/chat_zen?useSSL=false";
+    public static final String URL = "jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false";
     /**
      * 数据库 用户名
      */
@@ -21,7 +21,7 @@ public class GeneratorMySQL {
     /**
      * 数据库 密码
      */
-    public static final String PASSWORD = "root";
+    public static final String PASSWORD = "QianXun";
     /**
      * 作者
      */

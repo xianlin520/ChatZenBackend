@@ -3,6 +3,7 @@ package vip.xianlin.entity.vo.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
+import vip.xianlin.utils.DataEnum;
 
 import java.util.Date;
 
@@ -23,6 +24,9 @@ public class UserBasicInfoVo {
     
     @Schema(description = "用户角色")
     String role;
+    
+    @Schema(description = "用户状态")
+    DataEnum.UserOnlineStatus status;
     
     @Schema(description = "用户最后登录时间")
     Date lastLoginTime;

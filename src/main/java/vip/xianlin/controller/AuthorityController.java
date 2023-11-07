@@ -67,8 +67,8 @@ public class AuthorityController {
     
     @PostMapping("/register")
     @Operation(summary = "用户注册", description = "用户注册, 传入用户信息")
-    public Result register(@RequestBody UserRegisterVo userRegisterVo,
-                           HttpServletRequest request) {
+    public Result<UserBasicInfoVo> register(@RequestBody UserRegisterVo userRegisterVo,
+                                            HttpServletRequest request) {
         // 打印用户注册信息
         log.info("用户注册邮箱: {}", userRegisterVo.getEmail());
         // 判断用户是否已经注册
@@ -127,8 +127,8 @@ public class AuthorityController {
     
     @PostMapping("/login-by-code")
     @Operation(summary = "验证码登录", description = "传入验证码和验证码类型, 进行登录认证")
-    public Result loginByCode(@RequestBody UserCodeAuthVo userCodeAuthVo,
-                              HttpServletRequest request) {
+    public Result<UserAuthTokenVo> loginByCode(@RequestBody UserCodeAuthVo userCodeAuthVo,
+                                               HttpServletRequest request) {
         String principal = null;
         // 判断邮箱是否为空
         if (Objects.nonNull(userCodeAuthVo.getPrincipal())) {
@@ -169,7 +169,7 @@ public class AuthorityController {
     
     @PostMapping("/login")
     @Operation(summary = "用户登录", description = "用户登录认证")
-    public Result login(@RequestBody UserAuthVo user) {
+    public Result<UserAuthTokenVo> login(@RequestBody UserAuthVo user) {
         // 创建用户名密码验证令牌UsernamePasswordAuthenticationToken
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getPrincipal(), user.getPassword());
         try {

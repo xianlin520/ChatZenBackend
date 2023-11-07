@@ -19,7 +19,7 @@ import java.util.Date;
  * </p>
  *
  * @author 羡林i
- * @since 2023-09-20
+ * @since 2023-11-07
  */
 @Getter
 @Setter
@@ -63,6 +63,14 @@ public class UserEntity extends Model<UserEntity> {
     @Schema(description = "用户最后登录时间")
     @TableField("last_login_time")
     private Date lastLoginTime;
+    
+    @Schema(description = "用户是否账号,默认否")
+    @TableField("is_deleted")
+    private Boolean deleted;
+    
+    @Schema(description = "用户当前状态,默认离线")
+    @TableField("status")
+    private String status;
     
     public String[] getRoles() {
         // 读取字符串, 以逗号分隔, 转换为数组

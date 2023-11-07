@@ -19,7 +19,7 @@ import java.util.Date;
  * </p>
  *
  * @author 羡林i
- * @since 2023-09-27
+ * @since 2023-11-07
  */
 @Getter
 @Setter
@@ -40,21 +40,21 @@ public class PrivateChatRecordEntity extends Model<PrivateChatRecordEntity> {
     @TableField("receive_id")
     private Integer receiveId;
     
+    @Schema(description = "消息类型")
+    @TableField("type")
+    private String type;
+    
     @Schema(description = "消息记录内容")
     @TableField("record_content")
     private String recordContent;
     
+    @Schema(description = "记录消息状态")
+    @TableField("status")
+    private String status;
+    
     @Schema(description = "发送消息时间, 默认当前时间")
     @TableField("send_time")
     private Date sendTime;
-    
-    @Schema(description = "记录是否撤回")
-    @TableField("is_delete")
-    private Boolean delete;
-    
-    @Schema(description = "记录撤回时间, 默认空")
-    @TableField("delete_time")
-    private Date deleteTime;
     
     @Override
     public Serializable pkVal() {
