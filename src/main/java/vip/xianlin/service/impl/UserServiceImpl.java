@@ -65,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserEntity> impleme
         privateChatRecordService.save(new PrivateChatRecordEntity()
                 .setUserId(friendRecord.getUserId()) // 发送者
                 .setReceiveId(friendRecord.getFriendId()) // 接收者
-                .setRecordContent("您好! 欢迎您使用轻语阁在线聊天系统!") // 消息内容
+                .setRecordContent("您好! 欢迎您使用轻语阁在线聊天系统") // 消息内容
         );
         return true;
     }
