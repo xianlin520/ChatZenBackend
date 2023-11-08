@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import vip.xianlin.entity.UserEntity;
 import vip.xianlin.service.IAuthorityService;
 import vip.xianlin.utils.Const;
+import vip.xianlin.utils.DataEnum;
 import vip.xianlin.utils.FlowUtils;
 
 import java.util.*;
@@ -61,7 +62,7 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
     }
     
     @Override
-    public long askEmailVerifyCode(String type, String email, String ip) {
+    public long askEmailVerifyCode(DataEnum.EmailType type, String email, String ip) {
         // 加锁, 防止并发
         synchronized (ip.intern()) {
             // 限流检查, 60秒内只能发送一次
@@ -73,7 +74,7 @@ public class AuthorityServiceImpl implements IAuthorityService, UserDetailsServi
             Random random = new Random();
             int code = random.nextInt(8999) + 1000;
             // 发送消息到消息队列
-            Map<String, Object> map = Map.of("type", type, "code", code, "email", email);
+            Map<String, Object> map = Map.of("type", type.name(), "code", code, "email", email);
             rabbitTemplate.convertAndSend(Const.MQ_MAIL, map);
             // 将验证码存入Redis, 有效期5分钟
             stringRedisTemplate.opsForValue().set(Const.VERIFY_EMAIL_DATA + email, String.valueOf(code), 5, TimeUnit.MINUTES);

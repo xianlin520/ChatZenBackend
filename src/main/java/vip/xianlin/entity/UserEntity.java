@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import vip.xianlin.utils.DataEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -64,13 +65,13 @@ public class UserEntity extends Model<UserEntity> {
     @TableField("last_login_time")
     private Date lastLoginTime;
     
-    @Schema(description = "用户是否账号,默认否")
+    @Schema(description = "用户是否注销,默认否")
     @TableField("is_deleted")
     private Boolean deleted;
     
     @Schema(description = "用户当前状态,默认离线")
     @TableField("status")
-    private String status;
+    private DataEnum.UserOnlineStatus status;
     
     public String[] getRoles() {
         // 读取字符串, 以逗号分隔, 转换为数组

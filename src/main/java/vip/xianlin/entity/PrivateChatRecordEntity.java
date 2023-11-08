@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import vip.xianlin.utils.DataEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -42,7 +43,7 @@ public class PrivateChatRecordEntity extends Model<PrivateChatRecordEntity> {
     
     @Schema(description = "消息类型")
     @TableField("type")
-    private String type;
+    private DataEnum.MessageFileType type;
     
     @Schema(description = "消息记录内容")
     @TableField("record_content")
@@ -50,7 +51,7 @@ public class PrivateChatRecordEntity extends Model<PrivateChatRecordEntity> {
     
     @Schema(description = "记录消息状态")
     @TableField("status")
-    private String status;
+    private DataEnum.MessageSendStatus status;
     
     @Schema(description = "发送消息时间, 默认当前时间")
     @TableField("send_time")

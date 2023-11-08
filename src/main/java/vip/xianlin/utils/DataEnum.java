@@ -5,6 +5,11 @@ package vip.xianlin.utils;
  * 数据库字段类型枚举
  */
 public class DataEnum {
+    // 邮件类型枚举
+    public enum EmailType {
+        REGISTER, LOGIN, RESET
+    }
+    
     // 用户角色枚举
     public enum UserRole {
         USER, ADMIN, TEST, BAN, GUEST

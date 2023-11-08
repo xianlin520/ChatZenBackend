@@ -12,5 +12,10 @@ import vip.xianlin.entity.UserEntity;
  * @since 2023-09-18
  */
 public interface IUserService extends IService<UserEntity> {
-
+    /**
+     * 添加新用户, 并添加默认数据
+     * 开启事务
+     */
+    boolean addUser(UserEntity userEntity);
+    
 }

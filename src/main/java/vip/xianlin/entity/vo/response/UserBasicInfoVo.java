@@ -28,6 +28,9 @@ public class UserBasicInfoVo {
     @Schema(description = "用户状态")
     DataEnum.UserOnlineStatus status;
     
+    @Schema(description = "用户账号是否已删除")
+    boolean deleted;
+    
     @Schema(description = "用户最后登录时间")
     Date lastLoginTime;
 }

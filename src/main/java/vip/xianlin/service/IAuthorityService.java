@@ -1,6 +1,7 @@
 package vip.xianlin.service;
 
 import vip.xianlin.entity.UserEntity;
+import vip.xianlin.utils.DataEnum;
 
 public interface IAuthorityService {
     /**
@@ -29,5 +30,5 @@ public interface IAuthorityService {
      * @param ip    IP地址
      * @return 限流剩余时间, 0表示发送成功
      */
-    long askEmailVerifyCode(String type, String email, String ip);
+    long askEmailVerifyCode(DataEnum.EmailType type, String email, String ip);
 }

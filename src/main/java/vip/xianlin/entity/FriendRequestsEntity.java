@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import vip.xianlin.utils.DataEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -46,7 +47,7 @@ public class FriendRequestsEntity extends Model<FriendRequestsEntity> {
     
     @Schema(description = "请求状态, 为枚举类型")
     @TableField("status")
-    private String status;
+    private DataEnum.FriendRequestStatus status;
     
     @Schema(description = "请求时间, 默认为当前时间")
     @TableField("send_time")

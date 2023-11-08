@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import vip.xianlin.utils.DataEnum;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -54,7 +55,7 @@ public class FriendRecordEntity extends Model<FriendRecordEntity> {
     
     @Schema(description = "消息通知等级")
     @TableField("notice_level")
-    private String noticeLevel;
+    private DataEnum.FriendNotificationLevel noticeLevel;
     
     @Override
     public Serializable pkVal() {

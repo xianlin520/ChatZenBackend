@@ -27,6 +27,7 @@ import vip.xianlin.entity.vo.response.UserBasicInfoVo;
 import vip.xianlin.service.IAuthorityService;
 import vip.xianlin.service.IUserService;
 import vip.xianlin.utils.Const;
+import vip.xianlin.utils.DataEnum;
 import vip.xianlin.utils.JwtUtils;
 
 import java.util.ArrayList;
@@ -85,9 +86,11 @@ public class AuthorityController {
         user.setEmail(userRegisterVo.getEmail());
         user.setUserName(userRegisterVo.getNickname());
         user.setPassword(passwordEncoder.encode(userRegisterVo.getPassword()));
-        user.setHeadThumb("url");
         // 保存用户信息
-        userService.save(user);
+        boolean b = userService.addUser(user);
+        if (!b) {
+            return Result.fail("注册失败");
+        }
         UserEntity userByPrincipal = authorityService.getUserByPrincipal(userRegisterVo.getEmail());
         // 拷贝用户信息到基本信息对象中
         UserBasicInfoVo userBasicInfoVo = new UserBasicInfoVo();
@@ -106,11 +109,11 @@ public class AuthorityController {
     @GetMapping("/ask-email-code")
     @Operation(summary = "请求邮箱验证码", description = "传入邮箱地址和验证码类型, 发送验证码到邮箱")
     public Result<Long> askEmailCode(@RequestParam @Email String email, // 邮箱地址, 必须符合邮箱格式
-                                     @RequestParam @NotNull String type,
+                                     @RequestParam @NotNull DataEnum.EmailType type,
                                      HttpServletRequest request) {
         long data = authorityService.askEmailVerifyCode(type, email, request.getRemoteAddr());
         if (data == 0)
-            return Result.succ(200, "验证码发送成功", 0L);
+            return Result.succ(200, "验证码发送成功", null);
         else
             return Result.fail(400, "请勿频繁请求验证码", data);
     }

@@ -38,12 +38,12 @@ public class MailQueueListener {
     
     @RabbitHandler
     public void sendMailMessage(Map<String, Object> map) {
-        // 打印日志
-        log.info("消息队列开始处理消息, 收件人:" + map.get("email"));
         // 获取邮件信息
         String email = (String) map.get("email");
         Integer code = (Integer) map.get("code");
         String type = (String) map.get("type");
+        // 打印日志
+        log.info("消息队列开始处理消息, 收件人:" + map.get("email"));
         try {
             //创建邮件正文
             Context context = new Context();
@@ -51,9 +51,9 @@ public class MailQueueListener {
             
             //将模块引擎内容解析成html字符串
             String emailContent = switch (type) {
-                case "register" -> templateEngine.process("EmailRegisterCode", context);
-                case "login" -> templateEngine.process("EmailLoginCode", context);
-                case "reset" -> templateEngine.process("EmailResetCode", context);
+                case "REGISTER" -> templateEngine.process("EmailRegisterCode", context);
+                case "LOGIN" -> templateEngine.process("EmailLoginCode", context);
+                case "RESET" -> templateEngine.process("EmailResetCode", context);
                 default -> templateEngine.process("EmailCode", context);
             };
             MimeMessage message = mailSender.createMimeMessage();
@@ -66,6 +66,7 @@ public class MailQueueListener {
             helper.setSubject("轻语阁-邮箱验证码"); // 设置邮件标题
             helper.setText(emailContent, true); // 设置邮件内容
             mailSender.send(message); // 发送邮件
+            log.info("邮件验证码发送成功, 收件人:" + email);
         } catch (Exception e) {
             log.error("邮件验证码发送失败, 收件人:" + email);
         }

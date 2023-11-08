@@ -34,7 +34,7 @@ public class GeneratorMySQL {
     /**
      * xml保存目录
      */
-    public static final String XML_SAVE_PATH = "vip/xianlin/mapper";
+    public static final String XML_SAVE_PATH = SAVE_PATH + "vip/xianlin/mapper";
     /**
      * 保存到包下面
      */
