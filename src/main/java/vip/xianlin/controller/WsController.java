@@ -1,16 +1,26 @@
 package vip.xianlin.controller;
 
+import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
-import vip.xianlin.entity.Result;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.RestController;
+import vip.xianlin.entity.ws.PrivateMessage;
 
-@Controller
+@RestController
+@Slf4j
 public class WsController {
-    @MessageMapping("/sendMessage")
-    @SendTo("/topic/messages")
-    public Result<String> sendMessage(String chatMessage) {
-        // 逻辑处理
-        return Result.succ(chatMessage);
+    
+    @Resource
+    private SimpMessagingTemplate messagingTemplate;
+    
+    
+    @MessageMapping("/private.message")
+    public void handlePrivateMessage(PrivateMessage privateMessage) {
+        log.info("接收到私聊消息：{}", privateMessage);
+        messagingTemplate.convertAndSendToUser(
+                privateMessage.getRecipient(),
+                "/private",
+                privateMessage);
     }
 }

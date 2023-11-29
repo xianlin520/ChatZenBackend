@@ -51,7 +51,11 @@ public class SecurityConfiguration {
                         "/static/**",
                         "/error/**",
                         // 开放websocket的请求
-                        "/websocket/**"
+                        "/websocket/**",
+                        "/ws/**",
+                        "/topic/**",
+                        "/user/**",
+                        "/app/**"
                 );
     }
     
