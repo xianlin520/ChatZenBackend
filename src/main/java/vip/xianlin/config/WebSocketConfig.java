@@ -22,7 +22,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // 启用一个简单的消息代理，并配置一个或多个前缀来过滤针对代理的目的地
-        registry.enableSimpleBroker("/topic", "/queue", "/user");
+        registry.enableSimpleBroker("/topic", "/queue", "/user", "/chat");
         // 配置一个或多个前缀，用于过滤针对应用程序的目的地。即客户端发送的目的地需要以“/app”开头
         registry.setApplicationDestinationPrefixes("/app");
         // 配置用户目的地的前缀，用于将用户目的地的消息发送到消息代理
