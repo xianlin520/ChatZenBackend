@@ -30,6 +30,12 @@
         <java.version>21</java.version>
     </properties>
     <dependencies>
+        <!-- 引入模版引擎 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+            <version>3.3.0</version>
+        </dependency>
         <!-- 代码生成器 -->
         <dependency>
             <groupId>com.baomidou</groupId>

@@ -9,6 +9,6 @@ chat-zen:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://121.41.122.33:3306/chatzen?useSSL=false # 设置数据库
+    url: jdbc:mysql://121.41.122.33:3306/chatzen?useSSL=false&allowPublicKeyRetrieval=true # 设置数据库
     username: chat_zen  # 数据库用户名
     password: ieFiFH2WAwdEYQMi  # 数据库密码
