@@ -3,6 +3,9 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### yml config ###
+!**/src/main/resources/application.yml
+
 ### STS ###
 .apt_generated
 .classpath
