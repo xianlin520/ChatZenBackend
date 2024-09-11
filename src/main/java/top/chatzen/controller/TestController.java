@@ -1,9 +1,9 @@
-package top.chatzen.chatzenspring.controller;
+package top.chatzen.controller;
 
 import com.alibaba.fastjson2.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import top.chatzen.chatzenspring.entity.Result;
+import top.chatzen.entity.Result;
 
 @Slf4j
 @RestController

@@ -1,4 +1,4 @@
-package top.chatzen.chatzenspring.entity;
+package top.chatzen.entity;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;

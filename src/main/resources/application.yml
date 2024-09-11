@@ -1,9 +1,14 @@
 server:
   port: 8080
 
+chat-zen:
+  jwt:
+    key: chatzen-key
+    expiration: 3600000 # 1 hour - 3600000ms
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://121.41.122.33:3306/chatzen?useSSL=false # 设置数据库
-    username: root  # 数据库用户名
-    password: mysql_mY3nw4  # 数据库密码
+    username: chatzen  # 数据库用户名
+    password: EdH38Q4HEsGA77Bs  # 数据库密码

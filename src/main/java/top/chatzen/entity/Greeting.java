@@ -1,4 +1,4 @@
-package top.chatzen.chatzenspring.entity;
+package top.chatzen.entity;
 
 import lombok.Getter;
 import lombok.Setter;

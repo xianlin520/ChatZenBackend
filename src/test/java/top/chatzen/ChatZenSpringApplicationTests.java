@@ -1,4 +1,4 @@
-package top.chatzen.chatzenspring;
+package top.chatzen;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

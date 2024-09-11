@@ -1,14 +1,23 @@
-package top.chatzen.chatzenspring.util;
+package top.chatzen.util;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
 public class JwtUtil {
-    private static final String SECRET_KEY = "your_secret_key";
+    // 从配置文件读取key
+    @Value("${chat-zen.jwt.key}")
+    private static String SECRET_KEY;
+    
+    // 设置过期时间
+    @Value("${chat-zen.jwt.expiration}")
+    private static long EXPIRATION_TIME;
+    
+    // 设置算法
     private static final Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
     
     /**
@@ -20,7 +29,7 @@ public class JwtUtil {
         return JWT.create()
                 .withSubject(userId)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(algorithm);
     }
     
