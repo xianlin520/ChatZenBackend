@@ -1,7 +1,9 @@
 package top.chatzen.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import top.chatzen.entity.Result;
 
@@ -9,6 +11,14 @@ import top.chatzen.entity.Result;
 @RestController
 @RequestMapping("/http-test")
 public class TestController {
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
+    
+    @GetMapping("/test-redis")
+    public Result<Object> testRedis() {
+        redisTemplate.opsForValue().set("test", "test");
+        return Result.succ(redisTemplate.opsForValue().get("test"));
+    }
     
     @GetMapping("/hello-get")
     public Result<String> hello() {
