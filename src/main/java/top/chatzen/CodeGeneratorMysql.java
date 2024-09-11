@@ -8,10 +8,11 @@ import java.sql.Types;
 
 public class CodeGeneratorMysql {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://121.41.122.33:3306/chatzen?useSSL=false", "chatzen", "EdH38Q4HEsGA77Bs")
+        FastAutoGenerator.create("jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false&allowPublicKeyRetrieval=true", "chat_zen", "ieFiFH2WAwdEYQMi")
                 .globalConfig(builder -> {
                     builder.author("XianLin") // 设置作者
-                            .outputDir("C:\\Users\\wanga\\IdeaProjects\\chat-zen-spring\\src\\main\\java"); // 指定输出目录
+                            .outputDir("C:\\Users\\wanga\\IdeaProjects\\chat-zen-spring\\src\\main\\java")  // 指定输出目录
+                            .disableOpenDir();  // 禁止打开输出目录
                 })
                 .dataSourceConfig(builder ->
                         builder.typeConvertHandler((globalConfig, typeRegistry, metaInfo) -> {
@@ -25,17 +26,19 @@ public class CodeGeneratorMysql {
                 )
                 .packageConfig(builder ->
                         builder.parent("top.chatzen")  // 设置父包名
-                                .entity("model")    // 设置实体类包名
+                                .entity("entity")    // 设置实体类包名
                                 .mapper("dao")    // 设置Mapper包名
                                 .service("service") // 设置Service包名
                                 .serviceImpl("service.impl")    // 设置Service Impl包名
-                                .controller("controller")    // 设置Controller包名
                                 .xml("mapper")  // 设置Mapper XML包名
                                 
                 )
                 .strategyConfig(builder ->
                         builder.addInclude("t_user_account") // 设置需要生成的表名
-                                .addTablePrefix("t_", "c_") // 设置过滤表前缀
+                                .addTablePrefix("t_") // 设置过滤表前缀
+                                .entityBuilder()
+                                .enableLombok()
+                                .enableTableFieldAnnotation()
                 )
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
