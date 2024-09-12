@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -35,6 +37,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -46,31 +49,36 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         // 判断是否是放行请求
         if (isFilterRequest(request)) {
             // 如果是放行请求，则直接放行
-            logger.info("放行路径 " + request.getRequestURI());
+            logger.info("放行路径 {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
-        logger.info("拦截路径 " + request.getRequestURI());
+        logger.info("拦截路径 {}", request.getRequestURI());
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
            try{
                // 验证JWTToken是否有效并在有效期
                boolean tokenExpired = jwtUtil.isTokenExpired(token);
-               if (!tokenExpired) {
+               if (tokenExpired) {
                    // 验证失败
+                   logger.error("Token已过期, 请重新登录");
                    fallback("Token失效, 请重新登录", response);
+                   return;
                }
-               
            } catch (Exception e){
                logger.error(e.getMessage());
                fallback("Token解析失败, 请重新获取", response);
+               return;
            }
             // 验证成功
             String userId = jwtUtil.extractUserId(token);
             String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
             SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
-            logger.info(JSON.toJSONString(securityUser, String.valueOf(true)));
-            
+            if (securityUser == null) {
+                fallback("用户信息解析失败, 请重新登录", response);
+                return;
+            }
+            logger.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
             // 将用户信息存入SecurityContextHolder
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(securityUser, null, null);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);

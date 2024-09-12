@@ -1,18 +1,21 @@
 package top.chatzen.controller;
 
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import top.chatzen.entity.Result;
 import top.chatzen.entity.UserAccount;
 import top.chatzen.service.IUserAccountService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
     @Resource
     private IUserAccountService userAccountService;
+    
+    @GetMapping("auth-test")
+    public Result<String> authTest() {
+        return Result.succ("auth-test");
+    }
     
     @PostMapping("/add")
     public String addUser(@RequestBody UserAccount userAccount) {

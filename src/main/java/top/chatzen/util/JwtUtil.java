@@ -54,7 +54,7 @@ public class JwtUtil {
     /**
      * 检查Token是否过期
      * @param token JWT Token
-     * @return 是否过期
+     * @return 是否过期 true表示过期，false表示未过期
      */
     public boolean isTokenExpired(String token) {
         return verifyToken(token).getExpiresAt().before(new Date());
