@@ -3,10 +3,13 @@ package top.chatzen.interrupt;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
+
 // 全局异常处理 - 自定义异常类
 @Setter
 @Getter
 public class BizException extends RuntimeException {
+    @Serial
     private static final long serialVersionUID = 1L;
     
     /**

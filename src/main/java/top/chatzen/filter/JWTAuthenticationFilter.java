@@ -37,7 +37,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     private Config.Security security; // 获取配置文件中的白名单
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-    private AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
+    private final AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,

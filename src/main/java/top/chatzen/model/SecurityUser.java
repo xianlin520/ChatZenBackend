@@ -1,20 +1,18 @@
 package top.chatzen.model;
 
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import top.chatzen.entity.UserAccount;
 
 import java.util.Collection;
 
+@Getter
 public class SecurityUser implements UserDetails {
-    private UserAccount userAccount;
+    private final UserAccount userAccount;
     
     public SecurityUser(UserAccount userAccount) {
         this.userAccount = userAccount;
-    }
-    
-    public UserAccount getUserAccount() {
-        return userAccount;
     }
     
     @Override
