@@ -1,11 +1,11 @@
 package top.chatzen.service;
 
-import top.chatzen.entity.UserAccount;
 import com.baomidou.mybatisplus.extension.service.IService;
+import top.chatzen.entity.UserAccount;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author XianLin
@@ -14,12 +14,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IUserAccountService extends IService<UserAccount> {
     /**
      * 保存用户账户信息
+     *
      * @param userAccount 用户账户信息
      */
     void saveUserAccount(UserAccount userAccount);
     
     /**
      * 根据用户id获取用户账户信息
+     *
      * @param userId 用户id
      * @return 用户信息, 如果没有则返回null
      */

@@ -1,12 +1,8 @@
 package top.chatzen.constant;
 
 public class Const {
-    // 创建角色枚举
-    public enum Role {
-        USER, ADMIN, TEST, BAN, GUEST
-    }
     //Redis存储
-    public final static String REDIS_KEY= "auth_token_key:%s";
+    public final static String REDIS_KEY = "auth_token_key:%s";
     //JWT令牌
     public final static String JWT_BLACK_LIST = "jwt:blacklist:";
     public final static String JWT_FREQUENCY = "jwt:frequency:";
@@ -27,4 +23,8 @@ public class Const {
     //消息队列
     public final static String MQ_MAIL = "mail";
     public final static String MQ_WS_SEND = "ws:send";
+    // 创建角色枚举
+    public enum Role {
+        USER, ADMIN, TEST, BAN, GUEST
+    }
 }

@@ -17,11 +17,11 @@ public class AuthController {
     private IAuthService authService;
     
     @PostMapping("/login")
-    public Result<String > login(@RequestBody JSONObject params){
-        String username  = params.getString("username");
+    public Result<String> login(@RequestBody JSONObject params) {
+        String username = params.getString("username");
         String password = params.getString("password");
         if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
-            return Result.fail(500, "用户名或密码为空！",null);
+            return Result.fail(500, "用户名或密码为空！", null);
         }
         String token = authService.login(username, password);
         return Result.succ(token);

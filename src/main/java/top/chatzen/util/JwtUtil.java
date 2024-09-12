@@ -25,25 +25,27 @@ public class JwtUtil {
     private Algorithm algorithm;
     
     @PostConstruct
-    public void init(){
+    public void init() {
         this.algorithm = Algorithm.HMAC256(SECRET_KEY);
     }
     
     /**
      * 生成JWT Token
+     *
      * @param userId 用户ID
      * @return 生成的JWT Token
      */
     public String generateToken(String userId) {
         return JWT.create()
-                .withSubject(userId)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .sign(algorithm);
+                .withSubject(userId) // 设置主题 - 用户id
+                .withIssuedAt(new Date())   // 设置签发时间 - 现在
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 设置过期时间 - 配置文件
+                .sign(algorithm); // 设置算法与签名秘钥 - 配置文件
     }
     
     /**
      * 提取用户ID
+     *
      * @param token JWT Token
      * @return 用户ID
      */
@@ -53,6 +55,7 @@ public class JwtUtil {
     
     /**
      * 检查Token是否过期
+     *
      * @param token JWT Token
      * @return 是否过期 true表示过期，false表示未过期
      */
@@ -62,6 +65,7 @@ public class JwtUtil {
     
     /**
      * 解析并验证JWT Token
+     *
      * @param token JWT Token
      * @return 解码后的JWT
      */
@@ -70,5 +74,5 @@ public class JwtUtil {
         return verifier.verify(token);
     }
     
-   
+    
 }

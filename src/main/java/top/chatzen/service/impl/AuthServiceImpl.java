@@ -32,21 +32,26 @@ public class AuthServiceImpl implements IAuthService {
     @Override
     public String login(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        // 调用AuthenticationManager的authenticate方法进行认证, 该方法会调用UserDetailsService的loadUserByUsername方法进行认证
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
+        // 认证完成后会返回Authentication对象, 该对象中包含了认证成功的用户信息
+        // 如果认证失败, 则authenticate方法会抛出AuthenticationException异常, 我已经配置了处理异常的类
         if (null == authenticate) {
             log.error("认证失败 {username:{}, password:{}}", username, password);
             return null;
         }
+        // 从认证对象中获取用户信息
         SecurityUser user = (SecurityUser) authenticate.getPrincipal();
         UserAccount userEntity = user.getUserAccount();
         // 生成token
         String token = jwtUtil.generateToken(userEntity.getId().toString());
         // 存入Redis
-        redisTemplate.opsForValue().set(String.format(Const.REDIS_KEY, userEntity.getId()),
-                JSON.toJSONString(user), jwtUtil.getEXPIRATION_TIME(), TimeUnit.MILLISECONDS);
+        redisTemplate.opsForValue().set(
+                String.format(Const.REDIS_KEY, userEntity.getId()), // 设置Redis Key - 常量
+                JSON.toJSONString(user),    // 存入Redis的值 - SecurityUser封装对象
+                jwtUtil.getEXPIRATION_TIME(),   // 设置数据过期时间 - jwt过期时间
+                TimeUnit.MILLISECONDS); // 设置过期时间的单位 - ms
         return token;
-        
-    
     }
     
     @Override

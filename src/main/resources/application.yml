@@ -3,10 +3,12 @@ server:
 
 chat-zen:
   security:
+    # Security认证白名单
     permit-all-path:
       - /http-test/**
       - /auth/**
   jwt:
+    # jwt加密key
     key: chatzen-key
     expiration: 172800000 # 48 hour - *ms
 

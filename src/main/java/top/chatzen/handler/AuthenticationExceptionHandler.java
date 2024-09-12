@@ -30,7 +30,7 @@ public class AuthenticationExceptionHandler implements AuthenticationEntryPoint 
             if (message == null) {
                 message = "认证失败！";
             }
-            Result<String > res = Result.fail(500, message,null);
+            Result<String> res = Result.fail(500, message, null);
             writer = response.getWriter();
             writer.append(JSON.toJSONString(res));
         } catch (IOException e) {

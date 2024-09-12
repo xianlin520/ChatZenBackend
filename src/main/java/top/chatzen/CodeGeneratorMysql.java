@@ -31,7 +31,7 @@ public class CodeGeneratorMysql {
                                 .service("service") // 设置Service包名
                                 .serviceImpl("service.impl")    // 设置Service Impl包名
                                 .xml("mapper")  // 设置Mapper XML包名
-                                
+                
                 )
                 .strategyConfig(builder ->
                         builder.addInclude("t_user_account") // 设置需要生成的表名

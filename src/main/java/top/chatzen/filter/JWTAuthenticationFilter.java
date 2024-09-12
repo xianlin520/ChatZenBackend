@@ -30,6 +30,7 @@ import java.util.List;
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     
+    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     @Resource
     private JwtUtil jwtUtil;
     @Resource
@@ -37,7 +38,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
     private AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
-    private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -56,20 +56,20 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         logger.info("拦截路径 {}", request.getRequestURI());
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             String token = header.substring(7);
-           try{
-               // 验证JWTToken是否有效并在有效期
-               boolean tokenExpired = jwtUtil.isTokenExpired(token);
-               if (tokenExpired) {
-                   // 验证失败
-                   logger.error("Token已过期, 请重新登录");
-                   fallback("Token失效, 请重新登录", response);
-                   return;
-               }
-           } catch (Exception e){
-               logger.error(e.getMessage());
-               fallback("Token解析失败, 请重新获取", response);
-               return;
-           }
+            try {
+                // 验证JWTToken是否有效并在有效期
+                boolean tokenExpired = jwtUtil.isTokenExpired(token);
+                if (tokenExpired) {
+                    // 验证失败
+                    logger.error("Token已过期, 请重新登录");
+                    fallback("Token失效, 请重新登录", response);
+                    return;
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                fallback("Token解析失败, 请重新获取", response);
+                return;
+            }
             // 验证成功
             String userId = jwtUtil.extractUserId(token);
             String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
@@ -85,14 +85,12 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             // 放行
             filterChain.doFilter(request, response);
         }
-        
-        
     }
     
     /**
      * 当请求不符合要求时，执行此方法
      *
-     * @param message 错误信息
+     * @param message  错误信息
      * @param response HttpServletResponse对象，用于设置响应内容
      */
     private void fallback(String message, HttpServletResponse response) {
@@ -106,7 +104,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 message = "403 Forbidden";
             }
             // 创建一个Result对象，表示请求失败，状态码为403，错误信息为message
-            Result<String> res = Result.fail(403, message,null);
+            Result<String> res = Result.fail(403, message, null);
             // 将Result对象转换为JSON字符串，并写入响应中
             writer = response.getWriter();
             writer.append(JSON.toJSONString(res));

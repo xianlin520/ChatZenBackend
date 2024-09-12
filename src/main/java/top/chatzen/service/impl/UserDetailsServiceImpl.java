@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         QueryWrapper<UserAccount> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(UserAccount::getUsername, username);
         UserAccount userAccount = userAccountService.getOne(wrapper);
-        
+        // 如果用户不存在则抛出异常
         if (userAccount == null) {
             throw new UsernameNotFoundException("用户名不存在");
         }

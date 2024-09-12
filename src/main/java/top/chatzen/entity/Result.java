@@ -14,15 +14,6 @@ public class Result<T> implements Serializable {
     private String msg;
     
     /**
-     * 快速将当前实体转换为JSON字符串格式
-     *
-     * @return JSON字符串
-     */
-    public String asJsonString() {
-        return JSONObject.toJSONString(this, JSONWriter.Feature.WriteNulls);
-    }
-    
-    /**
      * 快速构建成功返回结果
      *
      * @param data 返回数据
@@ -86,6 +77,15 @@ public class Result<T> implements Serializable {
         result.setMsg(msg);
         result.setData(data);
         return result;
+    }
+    
+    /**
+     * 快速将当前实体转换为JSON字符串格式
+     *
+     * @return JSON字符串
+     */
+    public String asJsonString() {
+        return JSONObject.toJSONString(this, JSONWriter.Feature.WriteNulls);
     }
     
 }

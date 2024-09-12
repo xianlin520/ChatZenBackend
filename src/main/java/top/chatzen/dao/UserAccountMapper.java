@@ -1,11 +1,11 @@
 package top.chatzen.dao;
 
-import top.chatzen.entity.UserAccount;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import top.chatzen.entity.UserAccount;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author XianLin

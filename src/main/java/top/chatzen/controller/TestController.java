@@ -40,5 +40,5 @@ public class TestController {
         log.info("请求体: {}", json);
         return Result.succ("hello " + json.getString("name"));
     }
-  
+    
 }

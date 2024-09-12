@@ -32,7 +32,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         logger.info("请求URI: {}", uri);
         logger.info("远程地址: {}", remoteAddress);
         
-        session.sendMessage(new TextMessage("已成功建议连接: "+ remoteAddress+" 当前连接数: "+count));
+        session.sendMessage(new TextMessage("已成功建议连接: " + remoteAddress + " 当前连接数: " + count));
         
     }
     
@@ -47,13 +47,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             if (connection.isOpen())
                 connection.sendMessage(new TextMessage("广播消息: " + payload));
         }
-       
+        
     }
     
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // 从列表中移除连接
-         connections.remove(session);
+        connections.remove(session);
         // 在连接关闭后做些什么
         logger.info("与会话ID {} 的连接关闭，状态: {}", session.getId(), status);
     }
