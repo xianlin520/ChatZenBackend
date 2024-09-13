@@ -56,4 +56,8 @@ public class SecurityUser implements UserDetails {
     public String getUsername() {
         return userAccount.getUsername();
     }
+    
+    public Integer getUserId() {
+        return userAccount.getId();
+    }
 }

@@ -15,7 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.chatzen.config.Config;
 import top.chatzen.constant.Const;
@@ -32,13 +31,13 @@ import java.util.Objects;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     
     private static final Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+    private final AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
     @Resource
     private JwtUtil jwtUtil;
     @Resource
     private Config.Security security; // 获取配置文件中的白名单
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-    private final AntPathMatcher pathMatcher = new AntPathMatcher(); // 路径匹配器
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -55,42 +54,50 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         logger.info("拦截路径 {}", request.getRequestURI());
-        if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            try {
-                // 验证JWTToken是否有效并在有效期
-                boolean tokenExpired = jwtUtil.isTokenExpired(token);
-                if (tokenExpired) {
-                    // 验证失败
-                    logger.error("Token已过期, 请重新登录");
-                    fallback("Token失效, 请重新登录", response);
-                    return;
-                }
-            } catch (Exception e) {
-                logger.error(e.getMessage());
-                fallback("Token解析失败, 请重新获取", response);
-                return;
-            }
-            // Token合法性验证成功
-            String userId = jwtUtil.extractUserId(token);
-            String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
-            SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
-            if (securityUser == null) {
-                fallback("用户信息解析失败, 请重新登录", response);
-                return;
-            }
-            // 验证当前Token是否与数据库的Token一致
-            if (!Objects.equals(securityUser.getJwtToken(), token)) {
-                fallback("Token已更新, 请获取最新Token", response);
-                return;
-            }
-            logger.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
-            // 将用户信息存入SecurityContextHolder
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(securityUser, null, null);
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            // 放行
-            filterChain.doFilter(request, response);
+        
+        
+        // 判断是否以Bearer开头
+        if (header.length() < 8 || !header.startsWith("Bearer ")) {
+            logger.error("Token格式错误");
+            fallback("Token格式错误, 请重新获取", response);
+            return;
         }
+        
+        // 获取jwt
+        String token = header.substring(7);
+        try {
+            // 验证JWTToken是否有效并在有效期
+            boolean tokenExpired = jwtUtil.isTokenExpired(token);
+            if (tokenExpired) {
+                // 验证失败
+                logger.error("Token已过期");
+                fallback("Token失效, 请重新登录", response);
+                return;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            fallback("Token解析失败, 请重新获取", response);
+            return;
+        }
+        // Token合法性验证成功
+        String username = jwtUtil.extractUserId(token);
+        String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, username));
+        SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
+        if (securityUser == null) {
+            fallback("用户信息解析失败, 请重新登录", response);
+            return;
+        }
+        // 验证当前Token是否与数据库的Token一致
+        if (!Objects.equals(securityUser.getJwtToken(), token)) {
+            fallback("Token已更新, 请获取最新Token", response);
+            return;
+        }
+        logger.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
+        // 将用户信息存入SecurityContextHolder
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(securityUser, null, null);
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        // 放行
+        filterChain.doFilter(request, response);
     }
     
     /**
@@ -100,6 +107,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
      * @param response HttpServletResponse对象，用于设置响应内容
      */
     private void fallback(String message, HttpServletResponse response) {
+        logger.error("token验证失败{}", message);
         // 设置响应的字符编码和内容类型
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

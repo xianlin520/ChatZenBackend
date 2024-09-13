@@ -7,6 +7,7 @@ chat-zen:
     permit-all-path:
       - /http-test/**
       - /auth/**
+      - /ws/**
   jwt:
     # jwt加密key
     key: chatzen-key
