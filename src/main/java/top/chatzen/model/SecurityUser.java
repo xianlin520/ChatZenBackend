@@ -1,6 +1,7 @@
 package top.chatzen.model;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import top.chatzen.entity.UserAccount;
@@ -10,6 +11,8 @@ import java.util.Collection;
 @Getter
 public class SecurityUser implements UserDetails {
     private final UserAccount userAccount;
+    @Setter
+    private String jwtToken;
     
     public SecurityUser(UserAccount userAccount) {
         this.userAccount = userAccount;

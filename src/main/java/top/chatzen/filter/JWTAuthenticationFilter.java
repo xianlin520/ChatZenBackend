@@ -26,6 +26,7 @@ import top.chatzen.util.JwtUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
@@ -70,12 +71,17 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 fallback("Token解析失败, 请重新获取", response);
                 return;
             }
-            // 验证成功
+            // Token合法性验证成功
             String userId = jwtUtil.extractUserId(token);
             String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
             SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
             if (securityUser == null) {
                 fallback("用户信息解析失败, 请重新登录", response);
+                return;
+            }
+            // 验证当前Token是否与数据库的Token一致
+            if (!Objects.equals(securityUser.getJwtToken(), token)) {
+                fallback("Token已更新, 请获取最新Token", response);
                 return;
             }
             logger.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
