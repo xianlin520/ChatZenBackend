@@ -4,7 +4,7 @@ import jakarta.annotation.Resource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import top.chatzen.entity.Result;
+import top.chatzen.model.Result;
 import top.chatzen.entity.UserAccount;
 import top.chatzen.model.SecurityUser;
 import top.chatzen.service.IUserAccountService;

@@ -5,7 +5,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import top.chatzen.entity.Result;
+import top.chatzen.model.Result;
 
 @Slf4j
 @RestController

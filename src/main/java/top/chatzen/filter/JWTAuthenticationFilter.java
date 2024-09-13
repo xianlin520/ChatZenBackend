@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.chatzen.config.Config;
 import top.chatzen.constant.Const;
-import top.chatzen.entity.Result;
+import top.chatzen.model.Result;
 import top.chatzen.model.SecurityUser;
 import top.chatzen.util.JwtUtil;
 

@@ -3,8 +3,8 @@ package top.chatzen.controller;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import top.chatzen.entity.Greeting;
-import top.chatzen.entity.HelloMessage;
+import top.chatzen.model.Greeting;
+import top.chatzen.model.HelloMessage;
 
 @Controller
 public class GreetingController {
