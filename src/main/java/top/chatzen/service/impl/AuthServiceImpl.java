@@ -44,7 +44,7 @@ public class AuthServiceImpl implements IAuthService {
         SecurityUser user = (SecurityUser) authenticate.getPrincipal();
         UserAccount userEntity = user.getUserAccount();
         // 生成token
-        String token = jwtUtil.generateToken(userEntity.getUsername());
+        String token = jwtUtil.generateToken(String.valueOf(userEntity.getId()));
         // 将Token存入SecurityUser
         user.setJwtToken(token);
         // 存入Redis

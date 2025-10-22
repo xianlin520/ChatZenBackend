@@ -80,8 +80,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         // Token合法性验证成功
-        String username = jwtUtil.extractUserId(token);
-        String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, username));
+        String userId = jwtUtil.extractUserId(token);
+        String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
         SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
         if (securityUser == null) {
             fallback("用户信息解析失败, 请重新登录", response);

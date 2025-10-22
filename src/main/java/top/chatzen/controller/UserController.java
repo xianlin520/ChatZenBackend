@@ -25,12 +25,13 @@ public class UserController {
     }
     
     @PostMapping("/add")
-    public String addUser(@RequestBody UserAccount userAccount) {
+    public Result<String> addUser(@RequestBody UserAccount userAccount) {
+        //TODO 用户注册/添加 不应在非放行路径下, 数据验证未完善
         boolean save = userAccountService.save(userAccount);
         if (save) {
-            return "User added successfully";
+            return Result.succ("用户添加成功");
         } else {
-            return "Failed to add user";
+            return Result.fail("用户添加失败");
         }
     }
 }
