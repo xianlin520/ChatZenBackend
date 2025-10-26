@@ -92,7 +92,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             fallback("Token已更新, 请获取最新Token", response);
             return;
         }
-        logger.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
+        logger.info("用户{}验证成功", securityUser.getUserAccount().getAccount());
         // 将用户信息存入SecurityContextHolder
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(securityUser, null, null);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);

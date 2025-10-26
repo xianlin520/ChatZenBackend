@@ -8,10 +8,11 @@ import java.sql.Types;
 
 public class CodeGeneratorMysql {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://121.41.122.33:3306/chat_zen?useSSL=false&allowPublicKeyRetrieval=true", "chat_zen", "ieFiFH2WAwdEYQMi")
+        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/chatzen?useSSL=false&allowPublicKeyRetrieval=true", "root", "root")
                 .globalConfig(builder -> {
                     builder.author("XianLin") // 设置作者
                             .outputDir("C:\\Users\\wanga\\IdeaProjects\\chat-zen-spring\\src\\main\\java")  // 指定输出目录
+//                            .outputDir("C:\\Users\\wanga\\IdeaProjects\\chat-zen-spring\\temp")  // 指定输出目录
                             .disableOpenDir();  // 禁止打开输出目录
                 })
                 .dataSourceConfig(builder ->
@@ -34,7 +35,7 @@ public class CodeGeneratorMysql {
                 
                 )
                 .strategyConfig(builder ->
-                        builder.addInclude("t_user_account") // 设置需要生成的表名
+                        builder.addInclude("t_user_status") // 设置需要生成的表名
                                 .addTablePrefix("t_") // 设置过滤表前缀
                                 .entityBuilder()
                                 .enableLombok()

@@ -54,10 +54,10 @@ public class SecurityUser implements UserDetails {
     
     @Override
     public String getUsername() {
-        return userAccount.getUsername();
+        return userAccount.getAccount();
     }
     
-    public Integer getUserId() {
-        return userAccount.getId();
+    public Long getUserId() {
+        return userAccount.getUserId();
     }
 }

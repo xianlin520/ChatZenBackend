@@ -25,14 +25,10 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     @Override
     public boolean save(UserAccount entity) {
         // TODO 修改保存逻辑
-        // 查询用户id与name是否重复
-        UserAccount userAccount = lambdaQuery().eq(UserAccount::getId, entity.getId()).one();
+        // 查询用户账号是否重复
+        UserAccount userAccount = lambdaQuery().eq(UserAccount::getAccount, entity.getAccount()).one();
         if (userAccount != null) {
-            throw new BizException("用户id重复");
-        }
-        userAccount = lambdaQuery().eq(UserAccount::getUsername, entity.getUsername()).one();
-        if (userAccount != null) {
-            throw new BizException("用户name重复");
+            throw new BizException("该账号已被注册");
         }
         // 密码加密
         entity.setPasswordHash(passwordEncoder.encode(entity.getPasswordHash()));

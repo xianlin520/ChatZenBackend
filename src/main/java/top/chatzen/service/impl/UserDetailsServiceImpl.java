@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 通过MybatisPlus查询用户信息
         QueryWrapper<UserAccount> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(UserAccount::getUsername, username);
+        wrapper.lambda().eq(UserAccount::getAccount, username);
         UserAccount userAccount = userAccountService.getOne(wrapper);
         // 如果用户不存在则抛出异常
         if (userAccount == null) {

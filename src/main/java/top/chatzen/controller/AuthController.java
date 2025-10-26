@@ -1,29 +1,24 @@
 package top.chatzen.controller;
 
-import com.alibaba.fastjson2.JSONObject;
 import jakarta.annotation.Resource;
-import org.springframework.util.StringUtils;
+import jakarta.mail.MessagingException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.chatzen.model.Result;
-import top.chatzen.service.IAuthService;
+import top.chatzen.model.SendMailModel;
+import top.chatzen.service.IMailService;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     @Resource
-    private IAuthService authService;
+    private IMailService mailService;
     
-    @PostMapping("/login")
-    public Result<String> login(@RequestBody JSONObject params) {
-        String username = params.getString("username");
-        String password = params.getString("password");
-        if (!StringUtils.hasText(username) || !StringUtils.hasText(password)) {
-            return Result.fail(500, "用户名或密码为空！", null);
-        }
-        String token = authService.login(username, password);
-        return Result.succ(token);
+    @PostMapping("/mail/send")
+    public Result<String> sendMail(@RequestBody SendMailModel sendMailModel) throws MessagingException {
+        mailService.sendSimpleMail(sendMailModel);
+        return Result.succ("发送成功");
     }
 }

@@ -16,6 +16,6 @@ public class GreetingController {
     @SendTo("/topic/msg")
     public Result<Principal> greeting(HelloMessage message, StompHeaderAccessor headerAccessor) {
         Principal user = headerAccessor.getUser();
-        return Result.succ(200, "Hello, "+ message.getName(), user);
+        return Result.succ(200, "Hello, " + message.getName(), user);
     }
 }

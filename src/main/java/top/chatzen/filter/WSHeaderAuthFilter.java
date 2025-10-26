@@ -80,7 +80,7 @@ public class WSHeaderAuthFilter implements ChannelInterceptor {
                 if (!Objects.equals(securityUser.getJwtToken(), token)) {
                     return null;
                 }
-                log.info("用户{}验证成功", securityUser.getUserAccount().getUsername());
+                log.info("用户{}验证成功", securityUser.getUserAccount().getAccount());
                 // 将用户名赋值
                 Principal principal = new Principal() {
                     @Override

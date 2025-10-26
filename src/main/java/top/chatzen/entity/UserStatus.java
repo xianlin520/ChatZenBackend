@@ -8,11 +8,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
  * <p>
- *
+ * 储存用户积分, 用户等级, 用户权限等
  * </p>
  *
  * @author XianLin
@@ -20,44 +19,38 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
-@TableName("t_user_account")
-public class UserAccount implements Serializable {
+@TableName("t_user_status")
+public class UserStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     /**
-     * 数据ID
+     * 主键_自增
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     
     /**
-     * 用户ID, 使用雪花算法生成-唯一
+     * 用户id-外键关联-唯一
      */
     @TableField("user_id")
     private Long userId;
     
     /**
-     * 用户昵称
+     * 用户积分
+     */
+    @TableField("points")
+    private Integer points;
+    
+    /**
+     * 用户权限等级
+     */
+    @TableField("level")
+    private Integer level;
+    
+    /**
+     * 用户权限等级名
      */
     @TableField("name")
     private String name;
-    
-    /**
-     * 用户账号-唯一
-     */
-    @TableField("account")
-    private String account;
-    
-    /**
-     * 用户密码-加密
-     */
-    @TableField("password_hash")
-    private String passwordHash;
-    
-    /**
-     * 账号创建时间
-     */
-    @TableField("create_time")
-    private LocalDateTime createTime;
 }
