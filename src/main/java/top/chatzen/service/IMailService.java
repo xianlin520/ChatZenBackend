@@ -5,6 +5,12 @@ import jakarta.mail.MessagingException;
 import top.chatzen.model.SendMailModel;
 
 public interface IMailService {
+    /**
+     * 发送验证码邮件
+     * @param sendMailModel 邮件内容
+     * @throws MessagingException
+     */
+    void sendVerificationCode(SendMailModel sendMailModel) throws MessagingException;
     
     /**
      * 发送简单文本邮件
@@ -32,4 +38,12 @@ public interface IMailService {
      * @throws MessagingException
      */
     void sendAttachmentMail(String to, String subject, String content, String filePath) throws MessagingException;
+    
+    /**
+     * 验证邮箱验证码
+     * @param email 邮箱地址
+     * @param code 验证码
+     * @return 验证结果
+     */
+    boolean verifyEmailCode(String email, String code);
 }

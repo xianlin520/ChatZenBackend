@@ -11,10 +11,10 @@ public class Const {
     public final static String FLOW_LIMIT_BLOCK = "flow:block:";
     //邮件验证码
     public final static String VERIFY_EMAIL_LIMIT = "verify:email:limit:";
-    public final static String VERIFY_EMAIL_DATA = "verify:email:data:";
+    public final static String VERIFY_EMAIL_DATA = "verify:email:data:%s";
     // 手机号验证码
     public final static String VERIFY_PHONE_LIMIT = "verify:phone:limit:";
-    public final static String VERIFY_PHONE_DATA = "verify:phone:data:";
+    public final static String VERIFY_PHONE_DATA = "verify:phone:data:%s";
     //过滤器优先级
     public final static int ORDER_FLOW_LIMIT = -101;
     public final static int ORDER_CORS = -102;

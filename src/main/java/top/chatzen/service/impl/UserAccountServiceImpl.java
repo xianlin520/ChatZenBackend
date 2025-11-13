@@ -24,7 +24,6 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     
     @Override
     public boolean save(UserAccount entity) {
-        // TODO 修改保存逻辑
         // 查询用户账号是否重复
         UserAccount userAccount = lambdaQuery().eq(UserAccount::getAccount, entity.getAccount()).one();
         if (userAccount != null) {
@@ -37,11 +36,13 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
     
     @Override
     public void saveUserAccount(UserAccount userAccount) {
-        // TODO 保存用户信息
+        // 保存用户信息
+        save(userAccount);
     }
     
     @Override
     public UserAccount getUserAccountByUserId(Long userId) {
-        return lambdaQuery().eq(UserAccount::getId, userId).one();
+        // 使用userId字段查询，而不是id字段
+        return lambdaQuery().eq(UserAccount::getUserId, userId).one();
     }
 }

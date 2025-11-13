@@ -15,9 +15,7 @@ import top.chatzen.model.SecurityUser;
 import top.chatzen.service.IUserStatusService;
 
 /**
- * <p>
- * 储存用户积分, 用户等级, 用户权限等 前端控制器
- * </p>
+ * UserStatus - 用户积分、等级和权限管理
  *
  * @author XianLin
  * @since 2025-10-24
@@ -29,6 +27,12 @@ public class UserStatusController {
     @Resource
     private IUserStatusService userStatusService;
     
+    /**
+     * 获取当前用户状态信息
+     * 包括积分、等级和权限等信息
+     * 
+     * @return 当前用户的状态信息
+     */
     @GetMapping("/info")
     public Result<UserStatus> getInfo() {
         // 从SecurityContextHolder获取Authentication对象, 然后获取SecurityUser封装用户信息
@@ -39,6 +43,12 @@ public class UserStatusController {
         return Result.succ(userStatusById);
     }
     
+    /**
+     * 更新当前用户积分
+     * 
+     * @param points 要更新的积分值
+     * @return 更新结果
+     */
     @GetMapping("/update/points/{points}")
     public Result<String> update(@PathVariable("points") int points) {
         
@@ -49,6 +59,13 @@ public class UserStatusController {
         return Result.succ("用户状态更新失败");
     }
     
+    /**
+     * 更新当前用户等级
+     * 根据用户积分自动升级用户等级
+     * 
+     * @return 更新结果
+     * @throws MessagingException 邮件发送异常
+     */
     @GetMapping("/update/level")
     public Result<String> updateLevel() throws MessagingException {
         boolean b = userStatusService.updateUserLevelByNow();
