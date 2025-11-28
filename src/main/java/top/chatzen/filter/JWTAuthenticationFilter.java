@@ -57,7 +57,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         
         
         // 判断是否以Bearer开头
-        if (header.length() < 8 || !header.startsWith("Bearer ")) {
+        if (header == null || header.length() < 8 || !header.startsWith("Bearer ")) {
             logger.error("Token格式错误");
             fallback("Token格式错误, 请重新获取", response);
             return;
