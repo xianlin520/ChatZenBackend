@@ -5,6 +5,12 @@
 [![Java](https://img.shields.io/badge/Java-JDK%2021-red)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)](https://www.mysql.com/)
 
+## 🌐 Other Languages
+
+- [中文文档](docs/README-CN.md)
+- [한국어](docs/README-KR.md)
+- [Русский](docs/README-RU.md)
+
 A modern, high-performance chat application backend built with Spring Boot 3.3 and JDK 21. Designed to provide real-time communication with robust security, scalability, and performance optimization.
 
 ## 🚀 Features
@@ -209,12 +215,6 @@ This project is licensed under the terms specified in the [LICENSE](LICENSE) fil
 - Thanks to the Spring Boot team for the excellent framework
 - Special thanks to all open-source dependencies that made this project possible
 - Appreciation to the community for continuous feedback and support
-
----
-
-## 🌐 其他语言
-
-- [中文文档](docs/README-CN.md) 
 
 ---
 
