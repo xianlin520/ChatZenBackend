@@ -214,7 +214,7 @@ This project is licensed under the terms specified in the [LICENSE](LICENSE) fil
 
 ## 🌐 其他语言
 
-- [中文文档](docs/README-CN.md)
+- [中文文档](docs/README-CN.md) 
 
 ---
 
