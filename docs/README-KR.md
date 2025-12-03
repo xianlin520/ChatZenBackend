@@ -5,6 +5,12 @@
 [![Java](https://img.shields.io/badge/Java-JDK%2021-red)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)](https://www.mysql.com/)
 
+## 🌐 Other Languages
+
+- [English](../README.md)
+- [中文文档](README-CN.md)
+- [Русский](README-RU.md)
+
 Spring Boot 3.3 및 JDK 21을 기반으로 구축된 현대적이고 고성능의 채팅 애플리케이션 백엔드입니다. 강력한 보안, 확장성 및 성능 최적화를 갖춘 실시간 통신을 제공하도록 설계되었습니다.
 
 ## 🚀 주요 기능
@@ -209,22 +215,6 @@ mvn -Dtest=YourTestClass test
 - 훌륭한 프레임워크를 제공한 Spring Boot 팀에게 감사드립니다
 - 이 프로젝트를 가능하게 한 모든 오픈 소스 종속성에 특별한 감사를 드립니다
 - 지속적인 피드백과 지원을 해준 커뮤니티에 감사드립니다
-
----
-
-## 🌐 Other Languages
-
-- [English](../README.md)
-- [中文文档](README-CN.md)
-- [Русский](README-RU.md)
-
----
-
-## 🌐 Other Languages
-
-- [English](../README.md)
-- [中文文档](README-CN.md)
-- [Русский](README-RU.md)
 
 ---
 

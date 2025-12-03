@@ -5,6 +5,12 @@
 [![Java](https://img.shields.io/badge/Java-JDK%2021-red)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-blue)](https://www.mysql.com/)
 
+## 🌐 其他语言
+
+- [English](../README.md)
+- [한국어](README-KR.md)
+- [Русский](README-RU.md)
+
 一款基于 Spring Boot 3.3 和 JDK 21 构建的现代化、高性能聊天应用后端。致力于提供实时通信，具备强大的安全机制、可扩展性和性能优化。
 
 ## 🚀 主要特性
@@ -209,14 +215,6 @@ mvn -Dtest=YourTestClass test
 - 感谢 Spring Boot 团队提供的优秀框架
 - 特别感谢所有使这个项目成为可能的开源依赖
 - 感谢社区持续的反馈和支持
-
----
-
-## 🌐 其他语言
-
-- [English](../README.md)
-- [한국어](README-KR.md)
-- [Русский](README-RU.md)
 
 ---
 
