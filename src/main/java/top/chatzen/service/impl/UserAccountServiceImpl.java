@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import top.chatzen.dao.UserAccountMapper;
 import top.chatzen.entity.UserAccount;
 import top.chatzen.interrupt.BizException;
+import top.chatzen.service.IRoleService;
 import top.chatzen.service.IUserAccountService;
 
 /**
@@ -21,6 +22,9 @@ import top.chatzen.service.IUserAccountService;
 public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserAccount> implements IUserAccountService {
     @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private IRoleService roleService;
     
     @Override
     public boolean save(UserAccount entity) {
@@ -31,6 +35,8 @@ public class UserAccountServiceImpl extends ServiceImpl<UserAccountMapper, UserA
         }
         // 密码加密
         entity.setPasswordHash(passwordEncoder.encode(entity.getPasswordHash()));
+        // 对于新注册的用户，始终分配默认角色，忽略用户可能指定的角色
+        entity.setRole(roleService.getDefaultRole());
         return super.save(entity);
     }
     

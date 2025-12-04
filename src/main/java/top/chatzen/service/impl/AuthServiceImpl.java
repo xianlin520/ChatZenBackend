@@ -1,6 +1,5 @@
 package top.chatzen.service.impl;
 
-import com.alibaba.fastjson2.JSON;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import top.chatzen.constant.Const;
 import top.chatzen.entity.UserAccount;
+import top.chatzen.model.AuthUserModel;
+import top.chatzen.model.RedisUserDto;
 import top.chatzen.model.SecurityUser;
 import top.chatzen.service.IAuthService;
 import top.chatzen.service.IUserAccountService;
@@ -28,7 +29,9 @@ public class AuthServiceImpl implements IAuthService {
     private JwtUtil jwtUtil;
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
-    
+    @Resource
+    private top.chatzen.service.IRoleService roleService;
+
     @Override
     public String login(String username, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
@@ -45,12 +48,12 @@ public class AuthServiceImpl implements IAuthService {
         UserAccount userEntity = user.getUserAccount();
         // 生成token
         String token = jwtUtil.generateToken(String.valueOf(userEntity.getId()));
-        // 将Token存入SecurityUser
-        user.setJwtToken(token);
-        // 存入Redis
+        // 创建Redis存储的DTO对象，包含用户信息和JWT令牌
+        RedisUserDto redisUserDto = RedisUserDto.fromSecurityUserAndToken(user, token);
+        // 存入Redis - 直接存储对象，让RedisTemplate使用其配置的序列化器
         redisTemplate.opsForValue().set(
                 String.format(Const.REDIS_KEY, userEntity.getId()), // 设置Redis Key - 常量
-                JSON.toJSONString(user),    // 存入Redis的值 - SecurityUser封装对象
+                redisUserDto,    // 存入Redis的值 - RedisUserDto封装对象
                 jwtUtil.getEXPIRATION_TIME(),   // 设置数据过期时间 - jwt过期时间
                 TimeUnit.MILLISECONDS); // 设置过期时间的单位 - ms
         return token;
@@ -58,6 +61,29 @@ public class AuthServiceImpl implements IAuthService {
     
     @Override
     public void addUser(UserAccount userAccount) {
+        // 对于新注册的用户，始终分配默认角色，忽略用户可能指定的角色
+        userAccount.setRole(roleService.getDefaultRole());
         userAccountService.saveUserAccount(userAccount);
+    }
+    
+    
+    @Override
+    public void addUserFromAuthModel(AuthUserModel authUserModel) {
+        // 将AuthUserModel转换为UserAccount实体
+        UserAccount userAccount = new UserAccount();
+        userAccount.setName(authUserModel.getName());
+        userAccount.setAccount(authUserModel.getAccount());
+        userAccount.setPasswordHash(authUserModel.getPasswordHash());
+        // 系统自动分配默认角色
+        userAccount.setRole(roleService.getDefaultRole());
+        userAccountService.saveUserAccount(userAccount);
+    }
+
+    @Override
+    public void logout(String token) {
+        // 从token中提取用户ID
+        String userId = jwtUtil.extractUserId(token);
+        // 从Redis中删除用户信息
+        redisTemplate.delete(String.format(Const.REDIS_KEY, userId));
     }
 }

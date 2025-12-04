@@ -12,6 +12,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 import top.chatzen.constant.Const;
+import top.chatzen.model.RedisUserDto;
 import top.chatzen.model.SecurityUser;
 import top.chatzen.util.JwtUtil;
 
@@ -63,31 +64,43 @@ public class WSHeaderAuthFilter implements ChannelInterceptor {
                     if (tokenExpired) {
                         // 验证失败
                         log.error("Token已过期");
-                        return null;
+                        return null; // 返回null表示拒绝连接
                     }
                 } catch (Exception e) {
-                    log.error("Token解析失败");
-                    return null;
+                    log.error("Token解析失败", e);
+                    return null; // 返回null表示拒绝连接
                 }
                 // Token合法性验证成功
                 String userId = jwtUtil.extractUserId(token);
-                String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
-                SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
-                if (securityUser == null) {
-                    return null;
+                Object cacheObj = redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
+                if (cacheObj == null) {
+                    log.error("用户缓存不存在，用户ID: {}", userId);
+                    return null; // 返回null表示拒绝连接
                 }
-                // 验证当前Token是否与数据库的Token一致
-                if (!Objects.equals(securityUser.getJwtToken(), token)) {
-                    return null;
+
+                // 现在只处理RedisUserDto类型
+                if (!(cacheObj instanceof RedisUserDto)) {
+                    log.error("用户缓存数据格式错误，用户ID: {}", userId);
+                    return null; // 返回null表示拒绝连接
+                }
+
+                RedisUserDto redisUserDto = (RedisUserDto) cacheObj;
+                SecurityUser securityUser = redisUserDto.toSecurityUser();
+
+                if (securityUser == null) {
+                    log.error("用户信息解析失败，用户ID: {}", userId);
+                    return null; // 返回null表示拒绝连接
+                }
+
+                // 验证当前Token是否与存储的Token一致
+                if (!Objects.equals(redisUserDto.getJwtToken(), token)) {
+                    log.error("Token不匹配，用户ID: {}", userId);
+                    return null; // 返回null表示拒绝连接
                 }
                 log.info("用户{}验证成功", securityUser.getUserAccount().getAccount());
                 // 将用户名赋值
-                Principal principal = new Principal() {
-                    @Override
-                    public String getName() {
-                        return securityUser.getUsername();
-                    }
-                };
+                final String principalName = securityUser.getUsername();
+                Principal principal = () -> principalName;
                 accessor.setUser(principal);
                 return message;
             }

@@ -25,20 +25,15 @@ public class AuthenticationExceptionHandler implements AuthenticationEntryPoint 
     private void fallback(String message, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        PrintWriter writer = null;
-        try {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        try (PrintWriter writer = response.getWriter()) {
             if (message == null) {
                 message = "认证失败！";
             }
-            Result<String> res = Result.fail(500, message, null);
-            writer = response.getWriter();
+            Result<String> res = Result.fail(HttpServletResponse.SC_UNAUTHORIZED, message, null);
             writer.append(JSON.toJSONString(res));
         } catch (IOException e) {
-            log.error(e.getMessage());
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
+            log.error("响应写入失败: {}", e.getMessage());
         }
     }
 }

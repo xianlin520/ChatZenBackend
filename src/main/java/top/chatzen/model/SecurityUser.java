@@ -1,8 +1,8 @@
 package top.chatzen.model;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import top.chatzen.entity.UserAccount;
 
@@ -11,9 +11,7 @@ import java.util.Collection;
 @Getter
 public class SecurityUser implements UserDetails {
     private final UserAccount userAccount;
-    @Setter
-    private String jwtToken;
-    
+
     public SecurityUser(UserAccount userAccount) {
         this.userAccount = userAccount;
     }
@@ -44,7 +42,16 @@ public class SecurityUser implements UserDetails {
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        // 如果用户账户中有角色信息，则返回对应权限，否则返回默认USER权限
+        String userRole = userAccount.getRole();
+        if (userRole != null && !userRole.isEmpty()) {
+            // 确保角色名称符合Spring Security规范（以ROLE_为前缀）
+            String role = userRole.toUpperCase(); // 统一转换为大写
+            return java.util.Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
+        } else {
+            // 默认角色为USER
+            return java.util.Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
     
     @Override

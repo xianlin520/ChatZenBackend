@@ -1,32 +1,39 @@
 package top.chatzen.config;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 
-@Configuration
-public class RedisConfiguration {
+@TestConfiguration
+public class TestConfig {
+
     @Bean
+    @ConditionalOnMissingBean(RedisTemplate.class)
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        // 我们为了开发方便直接使用<String,Object>泛型
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+
         // 序列化配置
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+        om.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL);
         // 注册JavaTimeModule以支持Java 8时间类型
-        om.registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule());
+        om.registerModule(new JavaTimeModule());
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(om, Object.class);
+
         // String序列化的配置
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+
         // key采用String的序列化
         template.setKeySerializer(stringRedisSerializer);
         // Hash的key也采用String的序列化方式
@@ -39,4 +46,3 @@ public class RedisConfiguration {
         return template;
     }
 }
-

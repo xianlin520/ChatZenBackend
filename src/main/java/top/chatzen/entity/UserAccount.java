@@ -60,4 +60,10 @@ public class UserAccount implements Serializable {
      */
     @TableField("create_time")
     private LocalDateTime createTime;
+
+    /**
+     * 用户角色
+     */
+    @TableField("role")
+    private String role;  // 角色通常由系统管理，不应由普通用户随意修改
 }

@@ -14,7 +14,7 @@ public class Config {
     //配置类，用于配置一些全局的配置信息
     @Setter
     @Getter
-    @ConfigurationProperties(prefix = "chatzen.security")
+    @ConfigurationProperties(prefix = "chat-zen.security")
     public static class Security {
         private List<String> permitAllPath;
         

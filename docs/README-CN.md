@@ -83,26 +83,35 @@ FLUSH PRIVILEGES;
 
 ### 3. 配置环境
 
-1. 在 `src/main/resources/application-dev.yml` 中更新数据库连接信息:
+1. 应用程序使用环境变量管理敏感配置。运行前可以设置这些变量:
+
+```bash
+# 数据库和 Redis 凭证（必需）
+export MYSQL_PASSWORD=your_mysql_password
+export REDIS_PASSWORD=your_redis_password
+
+# JWT 配置（可选，默认已提供）
+export CHATZEN_JWT_KEY=your_secret_key
+
+# 邮件服务配置（可选，默认已提供）
+export MAIL_PASSWORD=your_email_password
+
+# 服务器端口（可选，默认为 8080）
+export SERVER_PORT=8080
+```
+
+2. 可选：您仍可在 `src/main/resources/application-dev.yml` 中自定义其他设置:
 
 ```yaml
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/chat_zen_db?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: chat_zen_user
-    password: strong_password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   redis:
     host: localhost
     port: 6379
-    # password: your_redis_password # 如需要
-
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
 ```
 
 ### 4. 构建项目
@@ -126,13 +135,34 @@ java -jar target/chat-zen-spring-0.0.1-SNAPSHOT.jar
 
 应用支持多环境配置:
 
-- **开发环境**: `application-dev.yml`
-- **生产环境**: `application-prod.yml`
-- **测试环境**: `application-test.yml`
+- **主配置**: `application.yml` - 包含服务器端口、JWT 设置、邮件服务配置和雪花算法设置，所有敏感配置通过环境变量管理
+- **开发环境**: `application-dev.yml` - 环境特定配置，如数据库、Redis 等
+- **生产环境**: `application-prod.yml` - 环境特定配置，如数据库、Redis 等
+- **测试环境**: `application-test.yml` - 环境特定配置，如数据库、Redis 等
 
 运行特定配置文件:
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
+### 环境变量
+
+此应用程序使用环境变量管理敏感配置。完整的必需和可选环境变量列表请参见 `ENVIRONMENT_VARIABLES.md`。
+
+设置环境变量:
+```bash
+# 服务器配置
+export SERVER_PORT=8080
+
+# JWT 配置
+export CHATZEN_JWT_KEY=your_secret_key
+
+# 数据库凭证
+export MYSQL_PASSWORD=your_mysql_password
+export REDIS_PASSWORD=your_redis_password
+
+# 邮件服务配置
+export MAIL_PASSWORD=your_email_password
 ```
 
 ## 📡 API 接口

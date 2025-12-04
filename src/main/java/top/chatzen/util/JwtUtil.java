@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
-    // 从配置文件读取key
+    // 从配置文件读取key，配置文件从环境变量获取值
     @Value("${chat-zen.jwt.key}")
     private String SECRET_KEY;
     
@@ -60,7 +60,12 @@ public class JwtUtil {
      * @return 是否过期 true表示过期，false表示未过期
      */
     public boolean isTokenExpired(String token) {
-        return verifyToken(token).getExpiresAt().before(new Date());
+        try {
+            return verifyToken(token).getExpiresAt().before(new Date());
+        } catch (Exception e) {
+            // 如果解析失败，通常意味着令牌无效（可能已过期）
+            return true;
+        }
     }
     
     /**

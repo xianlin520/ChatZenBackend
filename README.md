@@ -83,26 +83,35 @@ FLUSH PRIVILEGES;
 
 ### 3. Configure Environment
 
-1. Update database connection details in `src/main/resources/application-dev.yml`:
+1. The application uses environment variables for sensitive configurations. You can set these before running the application:
+
+```bash
+# Database and Redis credentials (required)
+export MYSQL_PASSWORD=your_mysql_password
+export REDIS_PASSWORD=your_redis_password
+
+# JWT configuration (optional, has default)
+export CHATZEN_JWT_KEY=your_secret_key
+
+# Email service configuration (optional, has default)
+export MAIL_PASSWORD=your_email_password
+
+# Server port (optional, default is 8080)
+export SERVER_PORT=8080
+```
+
+2. Optional: You can still customize other settings in `src/main/resources/application-dev.yml`:
 
 ```yaml
 spring:
   datasource:
     url: jdbc:mysql://localhost:3306/chat_zen_db?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
     username: chat_zen_user
-    password: strong_password
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   redis:
     host: localhost
     port: 6379
-    # password: your_redis_password # if applicable
-
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
 ```
 
 ### 4. Build the Project
@@ -126,13 +135,34 @@ java -jar target/chat-zen-spring-0.0.1-SNAPSHOT.jar
 
 The application supports multiple environments:
 
-- **Development**: `application-dev.yml`
-- **Production**: `application-prod.yml`
-- **Test**: `application-test.yml`
+- **Main Configuration**: `application.yml` - Contains server port, JWT settings, email service configuration, and snowflake algorithm settings, with all sensitive configurations managed via environment variables
+- **Development**: `application-dev.yml` - Environment-specific configurations like database, Redis, etc.
+- **Production**: `application-prod.yml` - Environment-specific configurations like database, Redis, etc.
+- **Test**: `application-test.yml` - Environment-specific configurations like database, Redis, etc.
 
 To run with a specific profile:
 ```bash
 mvn spring-boot:run -Dspring-boot.run.profiles=prod
+```
+
+### Environment Variables
+
+This application uses environment variables for sensitive configurations. See `ENVIRONMENT_VARIABLES.md` for a complete list of required and optional environment variables.
+
+To set environment variables:
+```bash
+# Server configuration
+export SERVER_PORT=8080
+
+# JWT configuration
+export CHATZEN_JWT_KEY=your_secret_key
+
+# Database credentials
+export MYSQL_PASSWORD=your_mysql_password
+export REDIS_PASSWORD=your_redis_password
+
+# Email service configuration
+export MAIL_PASSWORD=your_email_password
 ```
 
 ## 📡 API Endpoints

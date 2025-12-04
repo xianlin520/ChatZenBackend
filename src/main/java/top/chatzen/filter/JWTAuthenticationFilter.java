@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import top.chatzen.config.Config;
 import top.chatzen.constant.Const;
+import top.chatzen.model.RedisUserDto;
 import top.chatzen.model.Result;
 import top.chatzen.model.SecurityUser;
 import top.chatzen.util.JwtUtil;
@@ -81,14 +83,24 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
         // Token合法性验证成功
         String userId = jwtUtil.extractUserId(token);
-        String cache = (String) redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
-        SecurityUser securityUser = JSON.parseObject(cache, SecurityUser.class);
+        Object cacheObj = redisTemplate.opsForValue().get(String.format(Const.REDIS_KEY, userId));
+
+        // 现在只处理RedisUserDto类型
+        if (!(cacheObj instanceof RedisUserDto)) {
+            fallback("用户缓存数据格式错误", response);
+            return;
+        }
+
+        RedisUserDto redisUserDto = (RedisUserDto) cacheObj;
+        SecurityUser securityUser = redisUserDto.toSecurityUser();
+
         if (securityUser == null) {
             fallback("用户信息解析失败, 请重新登录", response);
             return;
         }
-        // 验证当前Token是否与数据库的Token一致
-        if (!Objects.equals(securityUser.getJwtToken(), token)) {
+
+        // 验证当前Token是否与存储的Token一致
+        if (!Objects.equals(redisUserDto.getJwtToken(), token)) {
             fallback("Token已更新, 请获取最新Token", response);
             return;
         }
@@ -111,24 +123,18 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         // 设置响应的字符编码和内容类型
         response.setCharacterEncoding("UTF-8");
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        PrintWriter writer = null;
-        try {
+        response.setStatus(HttpStatus.FORBIDDEN.value());
+        try (PrintWriter writer = response.getWriter()) {
             // 如果message为空，则设置默认错误信息
             if (message == null) {
                 message = "403 Forbidden";
             }
             // 创建一个Result对象，表示请求失败，状态码为403，错误信息为message
-            Result<String> res = Result.fail(403, message, null);
+            Result<String> res = Result.fail(HttpStatus.FORBIDDEN.value(), message, null);
             // 将Result对象转换为JSON字符串，并写入响应中
-            writer = response.getWriter();
             writer.append(JSON.toJSONString(res));
         } catch (IOException e) {
-            logger.error(e.getMessage());
-        } finally {
-            // 关闭PrintWriter对象
-            if (writer != null) {
-                writer.close();
-            }
+            logger.error("响应写入失败: {}", e.getMessage());
         }
     }
     

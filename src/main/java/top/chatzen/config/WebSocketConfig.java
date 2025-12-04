@@ -29,9 +29,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 添加一个服务端点，客户端就可以通过这个端点来进行连接。withSockJS()的作用是开启SockJS支持
         registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")  // 允许跨域
+                .setAllowedOriginPatterns("http://localhost:3000", "http://127.0.0.1:3000", "https://yourdomain.com")  // 设置具体的允许来源
                 .withSockJS();
-        
+
     }
     
     /**

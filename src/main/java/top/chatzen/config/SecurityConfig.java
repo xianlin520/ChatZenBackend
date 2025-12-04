@@ -37,14 +37,14 @@ public class SecurityConfig {
         List<String> permitAllPaths = security.getPermitAllPath();
         // 配置不需要认证的请求(这里所有的路径可以写在配置文件上修改时就不用改代码)
         if (!CollectionUtils.isEmpty(permitAllPaths)) {
-            permitAllPaths.forEach(path -> {
-                try {
-                    // 放行白名单路径
-                    http.authorizeHttpRequests(auth -> auth
-                            .requestMatchers(path).permitAll());   // 放行白名单路径
-                } catch (Exception e) {
-                    log.error("放行白名单路径失败", e);
-                }
+            http.authorizeHttpRequests(auth -> {
+                // 对所有白名单路径设置为允许访问
+                auth.requestMatchers(permitAllPaths.toArray(new String[0])).permitAll();
+            });
+        } else {
+            http.authorizeHttpRequests(auth -> {
+                // 没有白名单路径时，确保配置仍然有效
+                auth.anyRequest().authenticated();
             });
         }
         http    // 关闭csrf保护, 因为无需Session

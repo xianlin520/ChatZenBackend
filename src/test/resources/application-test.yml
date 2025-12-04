@@ -1,0 +1,37 @@
+# 应用程序测试配置
+# 用于测试环境的配置
+
+chat-zen:
+  jwt:
+    key: test-secret-key  # 测试用JWT密钥
+    expiration: 3600000   # 1小时过期时间
+
+spring:
+  # 允许Bean定义覆盖（测试环境）
+  main:
+    allow-bean-definition-overriding: true
+
+  # 数据源配置（测试用H2内存数据库）
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  # Redis配置（如果本地没有Redis服务器，可以使用嵌入式或跳过相关测试）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+
+  # H2数据库控制台
+  h2:
+    console:
+      enabled: true
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
